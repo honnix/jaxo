@@ -1,45 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-  <!--
-   | put company details here
-  <organization>
-    <name>...</name>
-    <url>http://...</url>
-  </organization>
-  -->
-
-  <!--
-   | put license details here
-  <licenses>
-    <license>
-      <name>...</name>
-      <url>http://...</url>
-      <comments>
-      </comments>
-    </license>
-  </licenses>
-  -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
+
+  <organization>
+    <name>honnix.com</name>
+    <url>http://honnix.com</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Apache License Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
   <groupId>com.honnix.jaxo</groupId>
   <artifactId>jaxo</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
   <name>com.honnix.jaxo (OSGi project)</name>
 
-  <!--
-   | describe your project here
-  -->
-
-  <description>Generated using Pax-Construct</description>
+  <description>JAXO stands for Java API for XML OSGi</description>
 
   <properties>
-    <!--
-     | some example OSGi runtime properties
-    -->
-    <org.osgi.service.http.port>8080</org.osgi.service.http.port>
-    <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
+    <encoding>UTF-8</encoding>
+    <osgi.version>4.2.0</osgi.version>
   </properties>
 
   <packaging>pom</packaging>
@@ -50,30 +39,63 @@
     <module>com.honnix.jaxo.core</module>
   </modules>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <!--
+         | dependency pom representing the global classpath of imported bundles
+        -->
+        <type>pom</type>
+        <groupId>com.honnix.jaxo.build</groupId>
+        <artifactId>provision</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+        <optional>true</optional>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.core</artifactId>
+        <version>${osgi.version}</version>
+        <scope>provided</scope>
+        <optional>true</optional>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.compendium</artifactId>
+        <version>${osgi.version}</version>
+        <scope>provided</scope>
+        <optional>true</optional>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.ops4j</groupId>
+          <artifactId>maven-pax-plugin</artifactId>
+          <version>1.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.3.7</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
       <plugin>
         <groupId>org.ops4j</groupId>
         <artifactId>maven-pax-plugin</artifactId>
-        <version>1.5</version>
         <configuration>
-          <!--
-           | some example Pax-Runner settings
-          -->
           <provision>
             <param>--platform=felix</param>
           </provision>
+          <runner>1.7.6</runner>
         </configuration>
         <executions>
-          <!--
-           | uncomment to auto-generate IDE files
-          <execution>
-            <id>ide-support</id>
-            <goals>
-              <goal>eclipse</goal>
-            </goals>
-          </execution>
-          -->
         </executions>
       </plugin>
     </plugins>
