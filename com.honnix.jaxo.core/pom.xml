@@ -44,6 +44,26 @@
       <artifactId>org.osgi.compendium</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>xml-resolver</groupId>
+      <artifactId>xml-resolver</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
 
 </project>
