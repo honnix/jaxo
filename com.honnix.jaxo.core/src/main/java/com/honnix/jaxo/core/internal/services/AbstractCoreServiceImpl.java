@@ -13,9 +13,9 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.honnix.jaxo.core.internal;
+package com.honnix.jaxo.core.internal.services;
 
-import com.honnix.jaxo.core.CoreService;
+import com.honnix.jaxo.core.services.CoreService;
 import com.honnix.jaxo.core.internal.util.FactoryBuilder;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,7 +27,7 @@ import javax.xml.xpath.XPathFactory;
  * @author honnix
  */
 abstract class AbstractCoreServiceImpl implements CoreService {
-    public AbstractCoreServiceImpl() {
+    AbstractCoreServiceImpl() {
         super();
     }
 
@@ -38,16 +38,16 @@ abstract class AbstractCoreServiceImpl implements CoreService {
 
     @Override
     public XPathFactory createXPathFactory() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return FactoryBuilder.buildXPathFactory();
     }
 
     @Override
     public TransformerFactory createTransformerFactory() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return FactoryBuilder.buildTransformerFactory();
     }
 
     @Override
     public SchemaFactory createSchemaFactory() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return FactoryBuilder.buildSchemaFactory();
     }
 }

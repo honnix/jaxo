@@ -15,8 +15,10 @@
  */
 package com.honnix.jaxo.core.internal;
 
-import com.honnix.jaxo.core.CoreService;
-import com.honnix.jaxo.core.PoolableCoreService;
+import com.honnix.jaxo.core.internal.services.CoreServiceImpl;
+import com.honnix.jaxo.core.internal.services.PoolableCoreServiceImpl;
+import com.honnix.jaxo.core.services.CoreService;
+import com.honnix.jaxo.core.services.PoolableCoreService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.ManagedService;
@@ -27,6 +29,10 @@ import java.util.Properties;
  * Extension of the default OSGi bundle activator
  */
 public final class CoreActivator implements BundleActivator {
+    public CoreActivator() {
+        super();
+    }
+
     public void start(BundleContext bc) throws Exception {
         CoreService coreService = new CoreServiceImpl();
         PoolableCoreService poolableCoreService = new PoolableCoreServiceImpl();

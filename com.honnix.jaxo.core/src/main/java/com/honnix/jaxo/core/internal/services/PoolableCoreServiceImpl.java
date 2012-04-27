@@ -13,34 +13,27 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.honnix.jaxo.core.internal;
+package com.honnix.jaxo.core.internal.services;
 
-import com.honnix.jaxo.core.CoreService;
-import com.honnix.jaxo.core.PoolableCoreService;
+import com.honnix.jaxo.core.internal.factory.TransformerObjectFactory;
+import com.honnix.jaxo.core.services.PoolableCoreService;
 import com.honnix.jaxo.core.exception.JAXOException;
 import com.honnix.jaxo.core.internal.factory.DocumentBuilderObjectFactory;
+import com.honnix.jaxo.core.internal.factory.XPathObjectFactory;
 import org.apache.commons.pool.ObjectPool;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathFactory;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author honnix
  */
-class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements PoolableCoreService, ManagedService {
+public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements PoolableCoreService, ManagedService {
     private static final String MAX_IDLE = ".maxIdle";
 
     private static final String MIN_IDLE = ".minIdle";
@@ -53,7 +46,7 @@ class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements Poolabl
 
     private static final String MIN_EVICTABLE_IDLE_TIME_MILLIS = ".minEvictableIdleTimeMillis";
 
-    private Map<String, ObjectPool> objectPoolMap;
+    private final Map<String, ObjectPool> objectPoolMap;
 
     public PoolableCoreServiceImpl() {
         super();
@@ -66,7 +59,7 @@ class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements Poolabl
         try {
             return (DocumentBuilder) objectPoolMap.get(DocumentBuilder.class.getName()).borrowObject();
         } catch (Exception e) {
-            throw new JAXOException("Unable to get DocumentBuilder.", e);
+            throw new JAXOException(e.getMessage(), e);
         }
     }
 
@@ -75,55 +68,63 @@ class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements Poolabl
         try {
             return (XPath) objectPoolMap.get(XPath.class.getName()).borrowObject();
         } catch (Exception e) {
-            throw new JAXOException("Unable to get XPath.", e);
+            throw new JAXOException(e.getMessage(), e);
         }
     }
 
     @Override
     public Transformer getTransformer() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public Schema getSchema() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            return (Transformer) objectPoolMap.get(Transformer.class.getName()).borrowObject();
+        } catch (Exception e) {
+            throw new JAXOException(e.getMessage(), e);
+        }
     }
 
     @Override
     public void updated(Dictionary properties) throws ConfigurationException {
-        if (properties == null) {
-            createDefaultPools();
-        } else {
-            createConfiguredPools(buildConfigMap(properties));
-        }
+        Map<String, GenericObjectPool.Config> configMap = buildConfigMap(properties != null ? properties : new
+                Properties());
+        createPools(configMap);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void returnDocumentBuilder(DocumentBuilder documentBuilder) {
         try {
             objectPoolMap.get(DocumentBuilder.class.getName()).returnObject(documentBuilder);
         } catch (Exception e) {
-            throw new JAXOException("Unable to return DocumentBuilder.", e);
+            throw new JAXOException(e.getMessage(), e);
         }
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void returnXPath(XPath xpath) {
         try {
             objectPoolMap.get(XPath.class.getName()).returnObject(xpath);
         } catch (Exception e) {
-            throw new JAXOException("Unable to return XPath.", e);
+            throw new JAXOException(e.getMessage(), e);
         }
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void returnTransformer(Transformer transformer) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            objectPoolMap.get(Transformer.class.getName()).returnObject(transformer);
+        } catch (Exception e) {
+            throw new JAXOException(e.getMessage(), e);
+        }
     }
 
     private Map<String, GenericObjectPool.Config> buildConfigMap(Dictionary properties) {
         Map<String, GenericObjectPool.Config> configMap = new HashMap<String, GenericObjectPool.Config>();
+
         configMap.put(DocumentBuilder.class.getName(), buildConfig(properties, DocumentBuilder.class.getName()));
+        configMap.put(XPath.class.getName(), buildConfig(properties, XPath.class.getName()));
+        configMap.put(Transformer.class.getName(), buildConfig(properties, Transformer.class.getName()));
+
         return configMap;
     }
 
@@ -163,27 +164,24 @@ class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements Poolabl
         return config;
     }
 
-    private void createConfiguredPools(Map<String, GenericObjectPool.Config> configMap) {
+    private void createPools(Map<String, GenericObjectPool.Config> configMap) {
         clearObjectPoolMap();
+
         objectPoolMap.put(DocumentBuilder.class.getName(), new GenericObjectPool<DocumentBuilder>(new
                 DocumentBuilderObjectFactory(), configMap.get(DocumentBuilder.class.getName())));
-    }
-
-    private void createDefaultPools() {
-        clearObjectPoolMap();
-        objectPoolMap.put(DocumentBuilder.class.getName(), new GenericObjectPool<DocumentBuilder>(new
-                DocumentBuilderObjectFactory()));
+        objectPoolMap.put(XPath.class.getName(), new GenericObjectPool<XPath>(new
+                XPathObjectFactory(), configMap.get(XPath.class.getName())));
+        objectPoolMap.put(Transformer.class.getName(), new GenericObjectPool<Transformer>(new
+                TransformerObjectFactory(), configMap.get(Transformer.class.getName())));
     }
 
     private void clearObjectPoolMap() {
-        Iterator<ObjectPool> iterator = objectPoolMap.values().iterator();
-        while (iterator.hasNext()) {
-            ObjectPool objectPool = iterator.next();
+        for (ObjectPool objectPool : objectPoolMap.values()) {
             try {
                 objectPool.close();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
-            iterator.remove();
         }
+        objectPoolMap.clear();
     }
 }

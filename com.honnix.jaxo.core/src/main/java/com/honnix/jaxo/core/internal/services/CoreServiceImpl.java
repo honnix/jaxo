@@ -13,21 +13,18 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.honnix.jaxo.core.internal;
+package com.honnix.jaxo.core.internal.services;
 
-import com.honnix.jaxo.core.CoreService;
+import com.honnix.jaxo.core.services.CoreService;
 import com.honnix.jaxo.core.exception.JAXOException;
-import com.honnix.jaxo.core.internal.util.FactoryBuilder;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathFactory;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,8 +33,8 @@ import java.util.Map;
  *
  * @author honnix
  */
-class CoreServiceImpl extends AbstractCoreServiceImpl {
-    private Map<String, ThreadLocal> threadLocalMap;
+public class CoreServiceImpl extends AbstractCoreServiceImpl {
+    private final Map<String, ThreadLocal> threadLocalMap;
 
     public CoreServiceImpl() {
         super();
@@ -48,6 +45,7 @@ class CoreServiceImpl extends AbstractCoreServiceImpl {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public DocumentBuilder getDocumentBuilder() {
         DocumentBuilder documentBuilder = (DocumentBuilder) threadLocalMap.get(DocumentBuilder.class.getName()).get();
 
@@ -55,7 +53,7 @@ class CoreServiceImpl extends AbstractCoreServiceImpl {
             try {
                 documentBuilder = createDocumentBuilderFactory().newDocumentBuilder();
             } catch (ParserConfigurationException e) {
-                throw new JAXOException("Unable to get DocumentBuilder.", e);
+                throw new JAXOException(e.getMessage(), e);
             }
 
             threadLocalMap.get(DocumentBuilder.class.getName()).set(documentBuilder);
@@ -65,6 +63,7 @@ class CoreServiceImpl extends AbstractCoreServiceImpl {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public XPath getXPath() {
         XPath xpath = (XPath) threadLocalMap.get(XPath.class.getName()).get();
 
@@ -77,12 +76,31 @@ class CoreServiceImpl extends AbstractCoreServiceImpl {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Transformer getTransformer() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+        Transformer transformer = (Transformer) threadLocalMap.get(Transformer.class.getName()).get();
 
-    @Override
-    public Schema getSchema() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        if (transformer == null) {
+            try {
+                transformer = TransformerFactory.newInstance().newTransformer();
+            } catch (TransformerConfigurationException e) {
+                throw new JAXOException(e.getMessage(), e);
+            }
+
+            /*
+            * NEVER set max line length since we don't want line break everywhere
+            */
+
+            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "2");
+            transformer.setOutputProperty("{http://xml.apache.org/xalan}line-separator",
+                    System.getProperty("line.separator"));
+
+            threadLocalMap.get(Transformer.class.getName()).set(transformer);
+
+        }
+
+        return transformer;
     }
 }

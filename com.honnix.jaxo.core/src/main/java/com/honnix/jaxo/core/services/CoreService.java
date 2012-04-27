@@ -13,21 +13,20 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.honnix.jaxo.core;
+package com.honnix.jaxo.core.services;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
 /**
- * JAXO core service. Most JAXP specified stuffs can be retrieved via this service.
+ * JAXO core services. Most JAXP specified stuffs can be retrieved via this services.
  * <p/>
- * This service guarantees that correct class loader will be used to load factories,
+ * This services guarantees that correct class loader will be used to load factories,
  * and these factories will not be cached.
  * <p/>
  * The other stuffs like <code>DocumentBuilder</code>, <code>XPath</code> will be cached.
@@ -50,6 +49,4 @@ public interface CoreService {
     Transformer getTransformer();
 
     SchemaFactory createSchemaFactory();
-
-    Schema getSchema();
 }

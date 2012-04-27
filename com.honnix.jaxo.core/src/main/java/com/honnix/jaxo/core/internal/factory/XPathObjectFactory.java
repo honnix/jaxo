@@ -13,29 +13,28 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
 package com.honnix.jaxo.core.internal.factory;
 
 import com.honnix.jaxo.core.internal.util.FactoryBuilder;
 import org.apache.commons.pool.BasePoolableObjectFactory;
 
-import javax.xml.parsers.DocumentBuilder;
+import javax.xml.xpath.XPath;
 
 /**
  * @author honnix
  */
-public class DocumentBuilderObjectFactory extends BasePoolableObjectFactory<DocumentBuilder> {
-    public DocumentBuilderObjectFactory() {
+public class XPathObjectFactory extends BasePoolableObjectFactory<XPath> {
+    public XPathObjectFactory() {
         super();
     }
 
     @Override
-    public DocumentBuilder makeObject() throws Exception {
-        return FactoryBuilder.buildDocumentBuilderFactory().newDocumentBuilder();
+    public XPath makeObject() throws Exception {
+        return FactoryBuilder.buildXPathFactory().newXPath();
     }
 
     @Override
-    public void passivateObject(DocumentBuilder builder) throws Exception {
-        builder.reset();
+    public void passivateObject(XPath xpath) throws Exception {
+        xpath.reset();
     }
 }
