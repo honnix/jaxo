@@ -18,7 +18,6 @@ package com.honnix.jaxo.core.internal.factory;
 import com.honnix.jaxo.core.internal.util.FactoryBuilder;
 import org.apache.commons.pool.BasePoolableObjectFactory;
 
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 
 /**
@@ -33,26 +32,11 @@ public class TransformerObjectFactory extends BasePoolableObjectFactory<Transfor
 
     @Override
     public Transformer makeObject() throws Exception {
-        Transformer transformer = FactoryBuilder.buildTransformerFactory().newTransformer();
-        setOutputProperties(transformer);
-        return transformer;
+        return FactoryBuilder.buildTransformerFactory().newTransformer();
     }
 
     @Override
     public void passivateObject(Transformer transformer) throws Exception {
         transformer.reset();
-        setOutputProperties(transformer);
-    }
-
-    private void setOutputProperties(Transformer transformer) {
-        /*
-        * NEVER set max line length since we don't want line break everywhere
-        */
-
-        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "2");
-        transformer.setOutputProperty("{http://xml.apache.org/xalan}line-separator",
-                System.getProperty("line.separator"));
     }
 }

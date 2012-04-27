@@ -95,11 +95,14 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
 
     @Override
     public Transformer getTransformer() {
+        Transformer transformer = null;
         try {
-            return (Transformer) objectPoolMap.get(Transformer.class.getName()).borrowObject();
+            transformer = (Transformer) objectPoolMap.get(Transformer.class.getName()).borrowObject();
         } catch (Exception e) {
             throw new JAXOException(e.getMessage(), e);
         }
+        setOutputProperties(transformer);
+        return transformer;
     }
 
     @Override

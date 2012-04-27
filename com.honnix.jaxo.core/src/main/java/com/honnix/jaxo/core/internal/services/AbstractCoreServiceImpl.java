@@ -19,6 +19,8 @@ import com.honnix.jaxo.core.internal.util.FactoryBuilder;
 import com.honnix.jaxo.core.services.CoreService;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPathFactory;
@@ -51,5 +53,17 @@ abstract class AbstractCoreServiceImpl implements CoreService {
     @Override
     public SchemaFactory createSchemaFactory() {
         return FactoryBuilder.buildSchemaFactory();
+    }
+
+    protected void setOutputProperties(Transformer transformer) {
+        /*
+        * NEVER set max line length since we don't want line break everywhere
+        */
+
+        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "2");
+        transformer.setOutputProperty("{http://xml.apache.org/xalan}line-separator",
+                System.getProperty("line.separator"));
     }
 }

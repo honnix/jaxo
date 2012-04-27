@@ -20,7 +20,6 @@ import com.honnix.jaxo.core.services.CoreService;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
@@ -42,6 +41,7 @@ public class CoreServiceImpl extends AbstractCoreServiceImpl {
         threadLocalMap = new HashMap<String, ThreadLocal>();
         threadLocalMap.put(DocumentBuilder.class.getName(), new ThreadLocal<DocumentBuilder>());
         threadLocalMap.put(XPath.class.getName(), new ThreadLocal<XPath>());
+        threadLocalMap.put(Transformer.class.getName(), new ThreadLocal<Transformer>());
     }
 
     @Override
@@ -86,19 +86,9 @@ public class CoreServiceImpl extends AbstractCoreServiceImpl {
             } catch (TransformerConfigurationException e) {
                 throw new JAXOException(e.getMessage(), e);
             }
-
-            /*
-            * NEVER set max line length since we don't want line break everywhere
-            */
-
-            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "2");
-            transformer.setOutputProperty("{http://xml.apache.org/xalan}line-separator",
-                    System.getProperty("line.separator"));
+            setOutputProperties(transformer);
 
             threadLocalMap.get(Transformer.class.getName()).set(transformer);
-
         }
 
         return transformer;

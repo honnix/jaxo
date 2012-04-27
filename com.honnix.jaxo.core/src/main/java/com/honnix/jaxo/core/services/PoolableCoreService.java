@@ -42,7 +42,8 @@ import javax.xml.xpath.XPath;
  * <ul>
  * <li>javax.xml.parsers.DocumentBuilder.maxIdle=dd</li>
  * <li>javax.xml.parsers.DocumentBuilder.minIdle=dd</li>
- * <li>javax.xml.parsers.DocumentBuilder.maxActive=xx</li>
+ * <li>javax.xml.parsers.DocumentBuilder.maxActive=dd</li>
+ * * <li>javax.xml.parsers.DocumentBuilder.maxWait=ddd</li>
  * <li>javax.xml.parsers.DocumentBuilder.timeBetweenEvictionRunsMillis=ddd</li>
  * <li>javax.xml.parsers.DocumentBuilder.minEvictableIdleTimeMillis=ddd</li>
  * </ul>
