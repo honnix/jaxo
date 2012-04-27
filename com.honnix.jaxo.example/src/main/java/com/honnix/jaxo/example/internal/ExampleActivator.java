@@ -1,8 +1,5 @@
 package com.honnix.jaxo.example.internal;
 
-import java.util.Dictionary;
-import java.util.Properties;
-
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 

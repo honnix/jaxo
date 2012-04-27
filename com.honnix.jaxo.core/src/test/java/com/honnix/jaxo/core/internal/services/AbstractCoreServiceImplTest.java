@@ -16,7 +16,6 @@
 package com.honnix.jaxo.core.internal.services;
 
 import com.honnix.jaxo.core.exception.JAXOException;
-import com.honnix.jaxo.core.internal.util.FactoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +24,6 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.xpath.XPath;
-
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;

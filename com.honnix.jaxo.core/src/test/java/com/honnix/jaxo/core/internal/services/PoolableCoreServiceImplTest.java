@@ -25,7 +25,6 @@ import org.osgi.service.cm.ManagedService;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.Transformer;
 import javax.xml.xpath.XPath;
-
 import java.util.Properties;
 
 import static org.junit.Assert.assertNotNull;
