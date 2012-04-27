@@ -1,5 +1,6 @@
 package com.honnix.jaxo.core.internal.util;
 
+import com.honnix.jaxo.core.internal.jaxb.ObjectFactory;
 import org.apache.xalan.xsltc.trax.TransformerFactoryImpl;
 import org.apache.xerces.jaxp.DocumentBuilderFactoryImpl;
 import org.apache.xerces.jaxp.validation.XMLSchemaFactory;
@@ -11,6 +12,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPathFactory;
+
+import java.util.HashMap;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -54,5 +57,11 @@ public class FactoryBuilderTest {
         assertTrue("it should support xml schema", factory.isSchemaLanguageSupported(XMLConstants
                 .W3C_XML_SCHEMA_NS_URI));
         assertTrue("it is the wrong type", factory instanceof XMLSchemaFactory);
+    }
+
+    @Test
+    public void testBuildJAXBContext() {
+        FactoryBuilder.buildJAXBContext(ObjectFactory.class.getPackage().getName(), getClass().getClassLoader(),
+                new HashMap<String, Object>());
     }
 }

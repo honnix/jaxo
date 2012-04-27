@@ -18,12 +18,14 @@ package com.honnix.jaxo.core.internal.services;
 import com.honnix.jaxo.core.internal.util.FactoryBuilder;
 import com.honnix.jaxo.core.services.CoreService;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPathFactory;
+import java.util.Map;
 
 /**
  * Implements create factories methods.
@@ -53,6 +55,11 @@ abstract class AbstractCoreServiceImpl implements CoreService {
     @Override
     public SchemaFactory createSchemaFactory() {
         return FactoryBuilder.buildSchemaFactory();
+    }
+
+    @Override
+    public JAXBContext createJAXBContext(String contextPath, ClassLoader classLoader, Map<String, ?> properties) {
+        return FactoryBuilder.buildJAXBContext(contextPath, classLoader, properties);
     }
 
     protected void setOutputProperties(Transformer transformer) {

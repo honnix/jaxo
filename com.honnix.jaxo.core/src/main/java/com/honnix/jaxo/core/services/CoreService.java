@@ -15,6 +15,7 @@
  */
 package com.honnix.jaxo.core.services;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -22,6 +23,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
+import java.util.Map;
 
 /**
  * JAXO core services. Most JAXP specified stuffs can be retrieved via this services.
@@ -94,8 +96,26 @@ public interface CoreService {
      * Create a new {@link SchemaFactory}. This will not be cached anyway.
      * <p/>
      * Sorry we only support creating XML schema factory, no other.
+     * <p/>
+     * <b>DO NOT</b> create instance on demand via a {@link SchemaFactory} as this is a very slow operation.
      *
      * @return the new created {@link SchemaFactory}
      */
     SchemaFactory createSchemaFactory();
+
+    /**
+     * Create a new {@link JAXBContext}. This will not be cached anyway.
+     * <p/>
+     * Creating {@link JAXBContext} is an extremely slow operation, so after creating a new {@link JAXBContext},
+     * client should cache it as long as possible. <b>DO NOT</b> create {@link JAXBContext} on demand.
+     * <p/>
+     * In the meanwhile, creating marshaller and unmarshaller is fast enough.
+     *
+     * @param contextPath a list of colon (':', \u005Cu003A) separated java package names that contain
+     *                    schema-derived classes and/or fully qualified JAXB-annotated classes.
+     * @param classLoader this class loader will be used to locate the implementation classes.
+     * @param properties  provider-specific properties
+     * @return the new created {@link JAXBContext}
+     */
+    JAXBContext createJAXBContext(String contextPath, ClassLoader classLoader, Map<String, ?> properties);
 }

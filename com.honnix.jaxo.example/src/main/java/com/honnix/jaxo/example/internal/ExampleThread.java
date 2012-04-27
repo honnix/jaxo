@@ -17,15 +17,18 @@ package com.honnix.jaxo.example.internal;
 
 import com.honnix.jaxo.core.services.CoreService;
 import com.honnix.jaxo.core.services.PoolableCoreService;
+import com.honnix.jaxo.example.internal.jaxb.ObjectFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
+import java.util.HashMap;
 
 /**
  * The thread which is used to test core services.
@@ -75,6 +78,11 @@ public class ExampleThread extends Thread {
         assert (transformerFactory != null);
         System.out.println("TransformerFactory is good");
 
+        JAXBContext jaxbContext = coreService.createJAXBContext(ObjectFactory.class.getPackage().getName(),
+                getClass().getClassLoader(), new HashMap<String, Object>());
+        assert (jaxbContext != null);
+        System.out.println("JAXBContext is good");
+
         DocumentBuilder builder = coreService.getDocumentBuilder();
         assert (builder != null);
         System.out.println("DocumentBuilder is good");
@@ -107,6 +115,11 @@ public class ExampleThread extends Thread {
         TransformerFactory transformerFactory = poolableCoreService.createTransformerFactory();
         assert (transformerFactory != null);
         System.out.println("TransformerFactory is good");
+
+        JAXBContext jaxbContext = poolableCoreService.createJAXBContext(ObjectFactory.class.getPackage().getName(),
+                getClass().getClassLoader(), new HashMap<String, Object>());
+        assert (jaxbContext != null);
+        System.out.println("JAXBContext is good");
 
         DocumentBuilder builder = poolableCoreService.getDocumentBuilder();
         assert (builder != null);

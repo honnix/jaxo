@@ -16,6 +16,7 @@
 package com.honnix.jaxo.core.internal.services;
 
 import com.honnix.jaxo.core.exception.JAXOException;
+import com.honnix.jaxo.core.internal.jaxb.ObjectFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,6 +25,7 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.xpath.XPath;
+import java.util.HashMap;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
@@ -75,6 +77,12 @@ public class AbstractCoreServiceImplTest {
                 ".org/xalan}indent-amount"));
         assertEquals("wrong line separator", System.getProperty("line.separator"),
                 properties.getProperty("{http://xml.apache.org/xalan}line-separator"));
+    }
+
+    @Test
+    public void testCreateJAXBContext() {
+        mockCoreService.createJAXBContext(ObjectFactory.class.getPackage().getName(), getClass().getClassLoader(),
+                new HashMap<String, Object>());
     }
 
     private static class MockCoreServiceImpl extends AbstractCoreServiceImpl {

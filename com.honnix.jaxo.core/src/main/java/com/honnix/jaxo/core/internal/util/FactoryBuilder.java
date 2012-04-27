@@ -18,11 +18,14 @@ package com.honnix.jaxo.core.internal.util;
 import com.honnix.jaxo.core.exception.JAXOException;
 
 import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathFactoryConfigurationException;
+import java.util.Map;
 
 /**
  * Helper class to build those factories.
@@ -38,6 +41,8 @@ public final class FactoryBuilder {
     private static final String TRANSFORMER_FACTORY_CLASS_NAME = "org.apache.xalan.xsltc.trax.TransformerFactoryImpl";
 
     private static final String SCHEMA_FACTORY_CLASS_NAME = "org.apache.xerces.jaxp.validation.XMLSchemaFactory";
+
+    private static final String JAXB_CONTEXT = "ycom.sun.xml.bind.v2.ContextFactor";
 
     /**
      * Build {@link DocumentBuilderFactory}. The underlying implementation used is <code>org.apache.xerces.jaxp
@@ -88,6 +93,24 @@ public final class FactoryBuilder {
     public static SchemaFactory buildSchemaFactory() {
         return SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI, SCHEMA_FACTORY_CLASS_NAME,
                 FactoryBuilder.class.getClassLoader());
+    }
+
+    /**
+     * Build {@link JAXBContext}. The factory used underlying is <code>ycom.sun.xml.bind.v2.ContextFactor</code>.
+     *
+     * @param contextPath a list of colon (':', \u005Cu003A) separated java package names that contain
+     *                    schema-derived classes and/or fully qualified JAXB-annotated classes.
+     * @param classLoader this class loader will be used to locate the implementation classes.
+     * @param properties  provider-specific properties
+     * @return the new created {@link JAXBContext}
+     */
+    public static JAXBContext buildJAXBContext(String contextPath, ClassLoader classLoader, Map<String, ?> properties) {
+        System.setProperty(JAXBContext.JAXB_CONTEXT_FACTORY, JAXB_CONTEXT);
+        try {
+            return JAXBContext.newInstance(contextPath, classLoader, properties);
+        } catch (JAXBException e) {
+            throw new JAXOException(e.getMessage(), e);
+        }
     }
 
     private FactoryBuilder() {
