@@ -37,6 +37,7 @@
     <module>poms</module>
     <module>provision</module>
     <module>com.honnix.jaxo.core</module>
+    <module>com.honnix.jaxo.example</module>
   </modules>
 
   <dependencyManagement>
@@ -48,6 +49,12 @@
         <type>pom</type>
         <groupId>com.honnix.jaxo.build</groupId>
         <artifactId>provision</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.honnix.jaxo</groupId>
+        <artifactId>com.honnix.jaxo.core</artifactId>
         <version>${project.version}</version>
         <scope>provided</scope>
       </dependency>
@@ -68,6 +75,12 @@
         <artifactId>org.apache.felix.configadmin</artifactId>
         <version>1.2.8</version>
         <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>xml-apis</groupId>
+        <artifactId>xml-apis</artifactId>
+        <version>1.4.01</version>
+        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>xalan</groupId>
@@ -133,7 +146,6 @@
         </plugin>
       </plugins>
     </pluginManagement>
-
     <plugins>
       <plugin>
         <groupId>org.ops4j</groupId>
@@ -146,8 +158,7 @@
           </provision>
           <runner>1.7.6</runner>
         </configuration>
-        <executions>
-        </executions>
+        <executions></executions>
       </plugin>
     </plugins>
   </build>

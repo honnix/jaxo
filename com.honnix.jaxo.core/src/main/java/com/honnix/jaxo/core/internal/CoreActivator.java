@@ -40,25 +40,25 @@ public final class CoreActivator implements BundleActivator {
     /**
      * Hooked into <code>start</code> lifecycle.
      *
-     * @param bc bundle context
+     * @param context bundle context
      * @throws Exception anything wrong
      */
-    public void start(BundleContext bc) throws Exception {
-        bc.registerService(CoreService.class.getName(), new CoreServiceImpl(), new Properties());
-        bc.registerService(PoolableCoreService.class.getName(), poolableCoreService, new Properties());
+    public void start(BundleContext context) throws Exception {
+        context.registerService(CoreService.class.getName(), new CoreServiceImpl(), new Properties());
+        context.registerService(PoolableCoreService.class.getName(), poolableCoreService, new Properties());
 
         Properties properties = new Properties();
         properties.setProperty("service.pid", PoolableCoreService.class.getName());
-        bc.registerService(ManagedService.class.getName(), poolableCoreService, properties);
+        context.registerService(ManagedService.class.getName(), poolableCoreService, properties);
     }
 
     /**
      * Hooked into <code>stop</code> lifecycle.
      *
-     * @param bc bundle context
+     * @param context bundle context
      * @throws Exception anything wrong
      */
-    public void stop(BundleContext bc) throws Exception {
+    public void stop(BundleContext context) throws Exception {
         poolableCoreService.close();
     }
 }
