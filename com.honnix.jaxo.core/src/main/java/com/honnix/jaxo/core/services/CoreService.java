@@ -32,21 +32,70 @@ import javax.xml.xpath.XPathFactory;
  * The other stuffs like <code>DocumentBuilder</code>, <code>XPath</code> will be cached.
  * <p/>
  * ThreadLocal is used for caching.
+ * <p/>
+ * Another important thing to note is the real implementation is hard coded not to use JDK embedded one,
+ * and this can not be changed.
  *
  * @author honnix
  */
 public interface CoreService {
+    /**
+     * Create a new {@link DocumentBuilderFactory}. This will not be cached anyway.
+     * <p/>
+     * By default, the {@link DocumentBuilderFactory} is configured as namespace aware.
+     *
+     * @return the new created {@link DocumentBuilderFactory}
+     */
     DocumentBuilderFactory createDocumentBuilderFactory();
 
+    /**
+     * Get {@link DocumentBuilder} from {@link ThreadLocal} if there is, otherwise create a new one,
+     * set it to {@link ThreadLocal}, and then return back.
+     * <p/>
+     * The {@link DocumentBuilderFactory} used to create this {@link DocumentBuilder} is configured as namespace aware.
+     *
+     * @return either one from {@link ThreadLocal} or a new created one
+     */
     DocumentBuilder getDocumentBuilder();
 
+    /**
+     * Create a new {@link XPathFactory}. This will not be cached anyway.
+     *
+     * @return the new created {@link XPathFactory}
+     */
     XPathFactory createXPathFactory();
 
+    /**
+     * Get {@link XPath} from {@link ThreadLocal} if there is, otherwise create a new one,
+     * set it to {@link ThreadLocal}, and then return back.
+     *
+     * @return either one from {@link ThreadLocal} or a new created one
+     */
     XPath getXPath();
 
+    /**
+     * Create a new {@link TransformerFactory}. This will not be cached anyway.
+     *
+     * @return the new created {@link TransformerFactory}
+     */
     TransformerFactory createTransformerFactory();
 
+    /**
+     * Get {@link Transformer} from {@link ThreadLocal} if there is, otherwise create a new one,
+     * set it to {@link ThreadLocal}, set output properties and then return back.
+     * <p/>
+     * {@link Transformer}s get via this API is only used to pretty print XML, not designed to use with XSLT.
+     *
+     * @return either one from {@link ThreadLocal} or a new created one
+     */
     Transformer getTransformer();
 
+    /**
+     * Create a new {@link SchemaFactory}. This will not be cached anyway.
+     * <p/>
+     * Sorry we only support creating XML schema factory, no other.
+     *
+     * @return the new created {@link SchemaFactory}
+     */
     SchemaFactory createSchemaFactory();
 }

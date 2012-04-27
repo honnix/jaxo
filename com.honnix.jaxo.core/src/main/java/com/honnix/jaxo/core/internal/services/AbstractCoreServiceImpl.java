@@ -15,8 +15,8 @@
  */
 package com.honnix.jaxo.core.internal.services;
 
-import com.honnix.jaxo.core.services.CoreService;
 import com.honnix.jaxo.core.internal.util.FactoryBuilder;
+import com.honnix.jaxo.core.services.CoreService;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.TransformerFactory;
@@ -24,6 +24,8 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPathFactory;
 
 /**
+ * Implements create factories methods.
+ *
  * @author honnix
  */
 abstract class AbstractCoreServiceImpl implements CoreService {

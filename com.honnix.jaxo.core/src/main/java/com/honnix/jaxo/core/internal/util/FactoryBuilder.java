@@ -26,6 +26,8 @@ import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathFactoryConfigurationException;
 
 /**
+ * Helper class to build those factories.
+ *
  * @author honnix
  */
 public final class FactoryBuilder {
@@ -38,6 +40,14 @@ public final class FactoryBuilder {
 
     private static final String SCHEMA_FACTORY_CLASS_NAME = "org.apache.xerces.jaxp.validation.XMLSchemaFactory";
 
+    /**
+     * Build {@link DocumentBuilderFactory}. The underlying implementation used is <code>org.apache.xerces.jaxp
+     * .DocumentBuilderFactoryImpl</code>.
+     * <p/>
+     * By default the {@link DocumentBuilderFactory} is configured as namespace aware.
+     *
+     * @return the new created {@link DocumentBuilderFactory}
+     */
     public static DocumentBuilderFactory buildDocumentBuilderFactory() {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(DOCUMENT_BUILDER_FACTORY_CLASS_NAME,
                 FactoryBuilder.class.getClassLoader());
@@ -45,6 +55,12 @@ public final class FactoryBuilder {
         return factory;
     }
 
+    /**
+     * Build {@link XPathFactory}. The underlying implementation used is <code>org.apache.xerces.jaxp
+     * .XPathFactoryImpl</code>.
+     *
+     * @return the new created {@link XPathFactory}
+     */
     public static XPathFactory buildXPathFactory() {
         try {
             return XPathFactory.newInstance(XPathFactory.DEFAULT_OBJECT_MODEL_URI, XPATH_FACTORY_CLASS_NAME,
@@ -54,10 +70,22 @@ public final class FactoryBuilder {
         }
     }
 
+    /**
+     * Build {@link TransformerFactory}. The underlying implementation used is <code>org.apache.xalan.xsltc.trax
+     * .TransformerFactoryImpl</code>.
+     *
+     * @return the new created {@link TransformerFactory}
+     */
     public static TransformerFactory buildTransformerFactory() {
         return TransformerFactory.newInstance(TRANSFORMER_FACTORY_CLASS_NAME, FactoryBuilder.class.getClassLoader());
     }
 
+    /**
+     * Build {@link SchemaFactory}. The underlying implementation used is <code>org.apache.xerces.jaxp.validation
+     * .XMLSchemaFactory</code>.
+     *
+     * @return the new created {@link SchemaFactory}
+     */
     public static SchemaFactory buildSchemaFactory() {
         return SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI, SCHEMA_FACTORY_CLASS_NAME,
                 FactoryBuilder.class.getClassLoader());

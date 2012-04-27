@@ -20,9 +20,10 @@ import org.apache.commons.pool.BasePoolableObjectFactory;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.xpath.XPath;
 
 /**
+ * Object factory to create {@link Transformer}.
+ *
  * @author honnix
  */
 public class TransformerObjectFactory extends BasePoolableObjectFactory<Transformer> {

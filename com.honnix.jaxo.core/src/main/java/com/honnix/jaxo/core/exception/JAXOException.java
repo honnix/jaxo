@@ -16,6 +16,9 @@
 package com.honnix.jaxo.core.exception;
 
 /**
+ * The only kind of exception that will be thrown by JAXO. Define it as unchecked exception to make life easier for
+ * Java programmer.
+ *
  * @author honnix
  */
 public class JAXOException extends RuntimeException {

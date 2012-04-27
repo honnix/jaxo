@@ -15,11 +15,11 @@
  */
 package com.honnix.jaxo.core.internal.services;
 
-import com.honnix.jaxo.core.internal.factory.TransformerObjectFactory;
-import com.honnix.jaxo.core.services.PoolableCoreService;
 import com.honnix.jaxo.core.exception.JAXOException;
 import com.honnix.jaxo.core.internal.factory.DocumentBuilderObjectFactory;
+import com.honnix.jaxo.core.internal.factory.TransformerObjectFactory;
 import com.honnix.jaxo.core.internal.factory.XPathObjectFactory;
+import com.honnix.jaxo.core.services.PoolableCoreService;
 import org.apache.commons.pool.ObjectPool;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.osgi.service.cm.ConfigurationException;
@@ -28,9 +28,19 @@ import org.osgi.service.cm.ManagedService;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.Transformer;
 import javax.xml.xpath.XPath;
-import java.util.*;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
+ * Implementation of {@link PoolableCoreService}. Also this class implements {@link ManagedService} by which it can
+ * receive configuration update.
+ * <p/>
+ * Whenever there is a configuration update, existing object pools will be closed,
+ * and a new ones will be created according to configuration. If there is no configuration,
+ * default properties of the object pool will be used.
+ *
  * @author honnix
  */
 public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements PoolableCoreService, ManagedService {
@@ -52,6 +62,17 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
         super();
 
         objectPoolMap = new HashMap<String, ObjectPool>();
+    }
+
+    @Override
+    public void close() {
+        for (ObjectPool objectPool : objectPoolMap.values()) {
+            try {
+                objectPool.close();
+            } catch (Exception ignored) {
+            }
+        }
+        objectPoolMap.clear();
     }
 
     @Override
@@ -165,7 +186,7 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
     }
 
     private void createPools(Map<String, GenericObjectPool.Config> configMap) {
-        clearObjectPoolMap();
+        close();
 
         objectPoolMap.put(DocumentBuilder.class.getName(), new GenericObjectPool<DocumentBuilder>(new
                 DocumentBuilderObjectFactory(), configMap.get(DocumentBuilder.class.getName())));
@@ -173,15 +194,5 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
                 XPathObjectFactory(), configMap.get(XPath.class.getName())));
         objectPoolMap.put(Transformer.class.getName(), new GenericObjectPool<Transformer>(new
                 TransformerObjectFactory(), configMap.get(Transformer.class.getName())));
-    }
-
-    private void clearObjectPoolMap() {
-        for (ObjectPool objectPool : objectPoolMap.values()) {
-            try {
-                objectPool.close();
-            } catch (Exception ignored) {
-            }
-        }
-        objectPoolMap.clear();
     }
 }

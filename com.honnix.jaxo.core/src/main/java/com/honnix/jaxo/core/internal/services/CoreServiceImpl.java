@@ -15,8 +15,8 @@
  */
 package com.honnix.jaxo.core.internal.services;
 
-import com.honnix.jaxo.core.services.CoreService;
 import com.honnix.jaxo.core.exception.JAXOException;
+import com.honnix.jaxo.core.services.CoreService;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;

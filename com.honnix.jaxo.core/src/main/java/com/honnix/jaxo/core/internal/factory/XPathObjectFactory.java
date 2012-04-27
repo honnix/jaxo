@@ -21,6 +21,8 @@ import org.apache.commons.pool.BasePoolableObjectFactory;
 import javax.xml.xpath.XPath;
 
 /**
+ * Object factory to create {@link XPath}.
+ *
  * @author honnix
  */
 public class XPathObjectFactory extends BasePoolableObjectFactory<XPath> {

@@ -26,18 +26,25 @@ import org.osgi.service.cm.ManagedService;
 import java.util.Properties;
 
 /**
- * Extension of the default OSGi bundle activator
+ * The main entrance of this bundle.
  */
 public final class CoreActivator implements BundleActivator {
+    private PoolableCoreService poolableCoreService;
+
     public CoreActivator() {
         super();
+
+        poolableCoreService = new PoolableCoreServiceImpl();
     }
 
+    /**
+     * Hooked into <code>start</code> lifecycle.
+     *
+     * @param bc bundle context
+     * @throws Exception anything wrong
+     */
     public void start(BundleContext bc) throws Exception {
-        CoreService coreService = new CoreServiceImpl();
-        PoolableCoreService poolableCoreService = new PoolableCoreServiceImpl();
-
-        bc.registerService(CoreService.class.getName(), coreService, new Properties());
+        bc.registerService(CoreService.class.getName(), new CoreServiceImpl(), new Properties());
         bc.registerService(PoolableCoreService.class.getName(), poolableCoreService, new Properties());
 
         Properties properties = new Properties();
@@ -45,7 +52,14 @@ public final class CoreActivator implements BundleActivator {
         bc.registerService(ManagedService.class.getName(), poolableCoreService, properties);
     }
 
+    /**
+     * Hooked into <code>stop</code> lifecycle.
+     *
+     * @param bc bundle context
+     * @throws Exception anything wrong
+     */
     public void stop(BundleContext bc) throws Exception {
+        poolableCoreService.close();
     }
 }
 

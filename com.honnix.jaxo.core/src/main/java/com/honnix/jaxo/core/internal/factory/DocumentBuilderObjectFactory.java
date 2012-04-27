@@ -22,6 +22,8 @@ import org.apache.commons.pool.BasePoolableObjectFactory;
 import javax.xml.parsers.DocumentBuilder;
 
 /**
+ * Object factory to create {@link DocumentBuilder}.
+ *
  * @author honnix
  */
 public class DocumentBuilderObjectFactory extends BasePoolableObjectFactory<DocumentBuilder> {
