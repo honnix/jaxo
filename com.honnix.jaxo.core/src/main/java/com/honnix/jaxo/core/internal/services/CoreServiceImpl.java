@@ -23,9 +23,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 import javax.xml.xpath.XPath;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation of {@link CoreService}.
@@ -35,6 +38,8 @@ import java.util.Map;
 public class CoreServiceImpl extends AbstractCoreServiceImpl {
     private final Map<String, ThreadLocal> threadLocalMap;
 
+    private final Map<Schema, ThreadLocal<Validator>> validatorThreadLocalMap;
+
     public CoreServiceImpl() {
         super();
 
@@ -42,6 +47,8 @@ public class CoreServiceImpl extends AbstractCoreServiceImpl {
         threadLocalMap.put(DocumentBuilder.class.getName(), new ThreadLocal<DocumentBuilder>());
         threadLocalMap.put(XPath.class.getName(), new ThreadLocal<XPath>());
         threadLocalMap.put(Transformer.class.getName(), new ThreadLocal<Transformer>());
+
+        validatorThreadLocalMap = new ConcurrentHashMap<Schema, ThreadLocal<Validator>>();
     }
 
     @Override
@@ -92,5 +99,29 @@ public class CoreServiceImpl extends AbstractCoreServiceImpl {
         }
 
         return transformer;
+    }
+
+    @Override
+    public Validator getValidator(Schema schema) {
+        ThreadLocal<Validator> threadLocal = validatorThreadLocalMap.get(schema);
+
+        if (threadLocal == null) {
+            threadLocal = new ThreadLocal<Validator>();
+            validatorThreadLocalMap.put(schema, threadLocal);
+        }
+
+        Validator validator = threadLocal.get();
+
+        if (validator == null) {
+            validator = schema.newValidator();
+            threadLocal.set(validator);
+        }
+
+        return validator;
+    }
+
+    @Override
+    public void clearValidators(Schema schema) {
+        validatorThreadLocalMap.remove(schema);
     }
 }

@@ -17,6 +17,8 @@ package com.honnix.jaxo.core.services;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.Transformer;
+import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 import javax.xml.xpath.XPath;
 
 /**
@@ -66,14 +68,22 @@ public interface PoolableCoreService extends CoreService {
     void returnXPath(XPath xpath);
 
     /**
-     * Return {@link Transformer} to object pool
+     * Return {@link Transformer} to object pool.
      *
      * @param transformer the object to return back to pool
      */
     void returnTransformer(Transformer transformer);
 
     /**
-     * Close object pool to release resources.
+     * Return {@link Transformer} to object pool.
+     *
+     * @param schema    identifies which pool to return back to
+     * @param validator the object to return back to pool
+     */
+    void returnValidator(Schema schema, Validator validator);
+
+    /**
+     * Close object pools to release resources.
      */
     void close();
 }

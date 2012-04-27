@@ -20,7 +20,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 import java.util.Map;
@@ -102,6 +104,26 @@ public interface CoreService {
      * @return the new created {@link SchemaFactory}
      */
     SchemaFactory createSchemaFactory();
+
+    /**
+     * Get {@link Validator} from {@link ThreadLocal} if there is, otherwise create a new one,
+     * set it to {@link ThreadLocal} and then return back. The <code>schema</code> parameter is used as a key to
+     * retrieve associated {@link ThreadLocal} object, and it be kept in cache until
+     * {@link #clearValidators(javax.xml.validation.Schema)} is invoked.
+     *
+     * @param schema the schema which is used to create {@link Validator}
+     * @return either one from {@link ThreadLocal} or a new create one from <code>schema</code>
+     */
+    Validator getValidator(Schema schema);
+
+    /**
+     * Clear all validators associated with <code>schema</code> from cache.
+     * <p/>
+     * Make sure nobody is using any validator associated with this schema before invoking this method.
+     *
+     * @param schema the schema with which the validators associate will be cleared
+     */
+    void clearValidators(Schema schema);
 
     /**
      * Create a new {@link JAXBContext}. This will not be cached anyway.

@@ -18,6 +18,7 @@ package com.honnix.jaxo.core.internal.services;
 import com.honnix.jaxo.core.exception.JAXOException;
 import com.honnix.jaxo.core.internal.factory.DocumentBuilderObjectFactory;
 import com.honnix.jaxo.core.internal.factory.TransformerObjectFactory;
+import com.honnix.jaxo.core.internal.factory.ValidatorObjectFactory;
 import com.honnix.jaxo.core.internal.factory.XPathObjectFactory;
 import com.honnix.jaxo.core.services.PoolableCoreService;
 import org.apache.commons.pool.ObjectPool;
@@ -27,11 +28,14 @@ import org.osgi.service.cm.ManagedService;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.Transformer;
+import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 import javax.xml.xpath.XPath;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation of {@link PoolableCoreService}. Also this class implements {@link ManagedService} by which it can
@@ -58,10 +62,15 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
 
     private final Map<String, ObjectPool> objectPoolMap;
 
+    private final Map<Schema, ObjectPool<Validator>> validatorObjectPoolMap;
+
+    private GenericObjectPool.Config validatorConfig;
+
     public PoolableCoreServiceImpl() {
         super();
 
         objectPoolMap = new HashMap<String, ObjectPool>();
+        validatorObjectPoolMap = new ConcurrentHashMap<Schema, ObjectPool<Validator>>();
     }
 
     @Override
@@ -95,7 +104,7 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
 
     @Override
     public Transformer getTransformer() {
-        Transformer transformer = null;
+        Transformer transformer;
         try {
             transformer = (Transformer) objectPoolMap.get(Transformer.class.getName()).borrowObject();
         } catch (Exception e) {
@@ -106,10 +115,38 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
     }
 
     @Override
+    public Validator getValidator(Schema schema) {
+        ObjectPool<Validator> validatorObjectPool = validatorObjectPoolMap.get(schema);
+
+        if (validatorObjectPool == null) {
+            validatorObjectPool = new GenericObjectPool<Validator>(new ValidatorObjectFactory(schema), validatorConfig);
+            validatorObjectPoolMap.put(schema, validatorObjectPool);
+        }
+
+        try {
+            return validatorObjectPool.borrowObject();
+        } catch (Exception e) {
+            throw new JAXOException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void clearValidators(Schema schema) {
+        ObjectPool<Validator> validatorObjectPool = validatorObjectPoolMap.remove(schema);
+        try {
+            validatorObjectPool.close();
+        } catch (Exception ignored) {
+        }
+    }
+
+    @Override
     public void updated(Dictionary properties) throws ConfigurationException {
-        Map<String, GenericObjectPool.Config> configMap = buildConfigMap(properties != null ? properties : new
-                Properties());
+        Dictionary props = properties != null ? properties : new Properties();
+
+        Map<String, GenericObjectPool.Config> configMap = buildConfigMap(props);
         createPools(configMap);
+
+        validatorConfig = buildConfig(props, Validator.class.getName());
     }
 
     @Override
@@ -137,6 +174,15 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
     public void returnTransformer(Transformer transformer) {
         try {
             objectPoolMap.get(Transformer.class.getName()).returnObject(transformer);
+        } catch (Exception e) {
+            throw new JAXOException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void returnValidator(Schema schema, Validator validator) {
+        try {
+            validatorObjectPoolMap.get(schema).returnObject(validator);
         } catch (Exception e) {
             throw new JAXOException(e.getMessage(), e);
         }

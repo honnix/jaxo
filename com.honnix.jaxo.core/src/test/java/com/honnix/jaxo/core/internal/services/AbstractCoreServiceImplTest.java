@@ -24,6 +24,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 import javax.xml.xpath.XPath;
 import java.util.HashMap;
 import java.util.Properties;
@@ -110,6 +112,15 @@ public class AbstractCoreServiceImplTest {
             }
             setOutputProperties(transformer);
             return transformer;
+        }
+
+        @Override
+        public Validator getValidator(Schema schema) {
+            return null;
+        }
+
+        @Override
+        public void clearValidators(Schema schema) {
         }
     }
 }
