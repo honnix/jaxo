@@ -29,6 +29,7 @@ import javax.xml.xpath.XPath;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Implementation of {@link CoreService}.
@@ -38,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CoreServiceImpl extends AbstractCoreServiceImpl {
     private final Map<String, ThreadLocal> threadLocalMap;
 
-    private final Map<Schema, ThreadLocal<Validator>> validatorThreadLocalMap;
+    private final ConcurrentMap<Schema, ThreadLocal<Validator>> validatorThreadLocalMap;
 
     public CoreServiceImpl() {
         super();
@@ -103,12 +104,10 @@ public class CoreServiceImpl extends AbstractCoreServiceImpl {
 
     @Override
     public Validator getValidator(Schema schema) {
-        ThreadLocal<Validator> threadLocal = validatorThreadLocalMap.get(schema);
-
-        if (threadLocal == null) {
-            threadLocal = new ThreadLocal<Validator>();
-            validatorThreadLocalMap.put(schema, threadLocal);
-        }
+        /*
+         * this looks stupid but to avoid lock, and there is almost no cost for creating a ThreadLocal object
+         */
+        ThreadLocal<Validator> threadLocal = validatorThreadLocalMap.putIfAbsent(schema, new ThreadLocal<Validator>());
 
         Validator validator = threadLocal.get();
 

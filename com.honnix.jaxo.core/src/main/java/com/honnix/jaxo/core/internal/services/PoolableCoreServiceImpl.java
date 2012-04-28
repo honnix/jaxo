@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Implementation of {@link PoolableCoreService}. Also this class implements {@link ManagedService} by which it can
@@ -62,7 +63,7 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
 
     private final Map<String, ObjectPool> objectPoolMap;
 
-    private final Map<Schema, ObjectPool<Validator>> validatorObjectPoolMap;
+    private final ConcurrentMap<Schema, ObjectPool<Validator>> validatorObjectPoolMap;
 
     private GenericObjectPool.Config validatorConfig;
 
@@ -116,12 +117,12 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
 
     @Override
     public Validator getValidator(Schema schema) {
-        ObjectPool<Validator> validatorObjectPool = validatorObjectPoolMap.get(schema);
-
-        if (validatorObjectPool == null) {
-            validatorObjectPool = new GenericObjectPool<Validator>(new ValidatorObjectFactory(schema), validatorConfig);
-            validatorObjectPoolMap.put(schema, validatorObjectPool);
-        }
+        /*
+         * this looks stupid but to avoid lock, hope creating a GenericObjectPool does not cost too much
+         * java suck with no lazy evaluation support
+         */
+        ObjectPool<Validator> validatorObjectPool = validatorObjectPoolMap.putIfAbsent(schema,
+                new GenericObjectPool<Validator>(new ValidatorObjectFactory(schema), validatorConfig));
 
         try {
             return validatorObjectPool.borrowObject();
