@@ -18,13 +18,15 @@ package com.honnix.jaxo.core.internal.services;
 import com.honnix.jaxo.core.services.CoreService;
 import org.junit.Before;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.Transformer;
+import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 import javax.xml.xpath.XPath;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 /**
  * Test class for {@link CoreServiceImpl}.
@@ -64,5 +66,34 @@ public class CoreServiceImplTest {
 
         XPath cachedXPath = coreService.getXPath();
         assertSame("it should have been cached", xpath, cachedXPath);
+    }
+
+    @Test
+    public void testGetValidator() throws SAXException {
+        Schema schema = coreService.createSchemaFactory().newSchema(getClass().getResource("/example.xsd"));
+
+        Validator validator = coreService.getValidator(schema);
+        assertNotNull("unable to get validator", validator);
+
+        Validator cachedValidator = coreService.getValidator(schema);
+        assertSame("it should have been cached", validator, cachedValidator);
+
+        coreService.clearValidators(schema);
+    }
+
+    @Test
+    public void testGetValidatorTwoSchemaInstances() throws SAXException {
+        Schema schema = coreService.createSchemaFactory().newSchema(getClass().getResource("/example.xsd"));
+        Validator validator = coreService.getValidator(schema);
+        assertNotNull("unable to get validator", validator);
+
+        Schema schema1 = coreService.createSchemaFactory().newSchema(getClass().getResource("/example.xsd"));
+        Validator validator1 = coreService.getValidator(schema1);
+        assertNotNull("unable to get validator", validator1);
+
+        assertNotSame("oops, they belong to different schema instances", validator, validator1);
+
+        coreService.clearValidators(schema);
+        coreService.clearValidators(schema1);
     }
 }

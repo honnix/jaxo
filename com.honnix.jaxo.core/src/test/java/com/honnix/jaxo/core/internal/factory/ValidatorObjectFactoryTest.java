@@ -15,42 +15,46 @@
  */
 package com.honnix.jaxo.core.internal.factory;
 
+import com.honnix.jaxo.core.internal.util.FactoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
-import javax.xml.xpath.XPath;
+import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 /**
- * Test class for {@link com.honnix.jaxo.core.internal.factory.XPathObjectFactory}.
+ * Test class for {@link ValidatorObjectFactory}.
  *
  * @author honnix
  */
 public class ValidatorObjectFactoryTest {
-    private XPathObjectFactory factory;
+    private ValidatorObjectFactory factory;
 
     public ValidatorObjectFactoryTest() {
         super();
     }
 
     @Before
-    public void before() {
-        factory = new XPathObjectFactory();
+    public void before() throws SAXException {
+        Schema schema = FactoryBuilder.buildSchemaFactory().newSchema(getClass().getResource("/example.xsd"));
+        factory = new ValidatorObjectFactory(schema);
     }
 
     @Test
     public void testMakeObject() throws Exception {
-        XPath xpath = factory.makeObject();
-        assertNotNull("sorry can not make more object", xpath);
+        Validator validator = factory.makeObject();
+        assertNotNull("sorry can not make more object", validator);
     }
 
     @Test
     public void testPassivateObject() throws Exception {
-        XPath mockXPath = mock(XPath.class);
-        factory.passivateObject(mockXPath);
-        verify(mockXPath).reset();
+        Validator mockValidator = mock(Validator.class);
+        factory.passivateObject(mockValidator);
+        verify(mockValidator).reset();
     }
 }

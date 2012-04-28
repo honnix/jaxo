@@ -20,12 +20,15 @@ import com.honnix.jaxo.core.services.PoolableCoreService;
 import com.honnix.jaxo.example.internal.jaxb.ObjectFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 import java.util.HashMap;
@@ -50,12 +53,14 @@ public class ExampleThread extends Thread {
         coreServiceTracker.open();
         verifyCoreService(coreServiceTracker);
         verifyCoreService(coreServiceTracker);
+        coreServiceTracker.close();
 
         ServiceTracker poolableCoreServiceTracker = new ServiceTracker(context, PoolableCoreService.class.getName(),
                 null);
         poolableCoreServiceTracker.open();
         verifyPoolableCoreService(poolableCoreServiceTracker);
         verifyPoolableCoreService(poolableCoreServiceTracker);
+        poolableCoreServiceTracker.close();
     }
 
     private void verifyCoreService(ServiceTracker coreServiceTracker) {
@@ -94,6 +99,15 @@ public class ExampleThread extends Thread {
         Transformer transformer = coreService.getTransformer();
         assert (transformer != null);
         System.out.println("Transformer is good");
+
+        try {
+            Schema schema = coreService.createSchemaFactory().newSchema(getClass().getResource("/example.xsd"));
+            Validator validator = coreService.getValidator(schema);
+            assert (validator != null);
+            System.out.println("Validator is good");
+        } catch (SAXException e) {
+            e.printStackTrace();
+        }
     }
 
     private void verifyPoolableCoreService(ServiceTracker poolableCoreServiceTracker) {
@@ -135,5 +149,14 @@ public class ExampleThread extends Thread {
         assert (transformer != null);
         System.out.println("Transformer is good");
         poolableCoreService.returnTransformer(transformer);
+
+        try {
+            Schema schema = poolableCoreService.createSchemaFactory().newSchema(getClass().getResource("/example.xsd"));
+            Validator validator = poolableCoreService.getValidator(schema);
+            assert (validator != null);
+            System.out.println("Validator is good");
+        } catch (SAXException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -107,7 +107,8 @@ public class CoreServiceImpl extends AbstractCoreServiceImpl {
         /*
          * this looks stupid but to avoid lock, and there is almost no cost for creating a ThreadLocal object
          */
-        ThreadLocal<Validator> threadLocal = validatorThreadLocalMap.putIfAbsent(schema, new ThreadLocal<Validator>());
+        validatorThreadLocalMap.putIfAbsent(schema, new ThreadLocal<Validator>());
+        ThreadLocal<Validator> threadLocal = validatorThreadLocalMap.get(schema);
 
         Validator validator = threadLocal.get();
 

@@ -21,9 +21,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.Transformer;
+import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 import javax.xml.xpath.XPath;
 import java.util.Properties;
 
@@ -125,6 +128,43 @@ public class PoolableCoreServiceImplTest {
 
         poolableCoreService.returnTransformer(cachedTransformer);
         poolableCoreService.returnTransformer(transformer);
+    }
+
+    @Test
+    public void testGetValidator() throws SAXException {
+        Schema schema = poolableCoreService.createSchemaFactory().newSchema(getClass().getResource("/example.xsd"));
+
+        Validator validator = poolableCoreService.getValidator(schema);
+        assertNotNull("unable to get validator", validator);
+
+        poolableCoreService.returnValidator(schema, validator);
+
+        Validator cachedValidator = poolableCoreService.getValidator(schema);
+        assertNotNull("unable to get validator", cachedValidator);
+
+        assertSame("it should have been cached", validator, cachedValidator);
+        poolableCoreService.returnValidator(schema, cachedValidator);
+
+        poolableCoreService.clearValidators(schema);
+    }
+
+    @Test
+    public void testGetValidatorTwoSchemaInstances() throws SAXException {
+        Schema schema = poolableCoreService.createSchemaFactory().newSchema(getClass().getResource("/example.xsd"));
+        Validator validator = poolableCoreService.getValidator(schema);
+        assertNotNull("unable to get validator", validator);
+
+        Schema schema1 = poolableCoreService.createSchemaFactory().newSchema(getClass().getResource("/example.xsd"));
+        Validator validator1 = poolableCoreService.getValidator(schema1);
+        assertNotNull("unable to get validator", validator1);
+
+        assertNotSame("oops, they belong to different schema instances", validator, validator1);
+
+        poolableCoreService.returnValidator(schema, validator);
+        poolableCoreService.returnValidator(schema1, validator1);
+
+        poolableCoreService.clearValidators(schema);
+        poolableCoreService.clearValidators(schema1);
     }
 
     @Test

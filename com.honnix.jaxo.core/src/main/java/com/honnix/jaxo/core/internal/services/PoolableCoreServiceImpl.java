@@ -121,8 +121,9 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
          * this looks stupid but to avoid lock, hope creating a GenericObjectPool does not cost too much
          * java suck with no lazy evaluation support
          */
-        ObjectPool<Validator> validatorObjectPool = validatorObjectPoolMap.putIfAbsent(schema,
+        validatorObjectPoolMap.putIfAbsent(schema,
                 new GenericObjectPool<Validator>(new ValidatorObjectFactory(schema), validatorConfig));
+        ObjectPool<Validator> validatorObjectPool = validatorObjectPoolMap.get(schema);
 
         try {
             return validatorObjectPool.borrowObject();

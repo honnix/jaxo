@@ -25,6 +25,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPathFactory;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -55,6 +56,11 @@ abstract class AbstractCoreServiceImpl implements CoreService {
     @Override
     public SchemaFactory createSchemaFactory() {
         return FactoryBuilder.buildSchemaFactory();
+    }
+
+    @Override
+    public JAXBContext createJAXBContext(String contextPath, ClassLoader classLoader) {
+        return FactoryBuilder.buildJAXBContext(contextPath, classLoader, new HashMap<String, Object>());
     }
 
     @Override

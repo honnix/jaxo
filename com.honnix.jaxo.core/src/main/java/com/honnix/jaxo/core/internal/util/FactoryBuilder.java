@@ -42,7 +42,9 @@ public final class FactoryBuilder {
 
     private static final String SCHEMA_FACTORY_CLASS_NAME = "org.apache.xerces.jaxp.validation.XMLSchemaFactory";
 
-    private static final String JAXB_CONTEXT = "ycom.sun.xml.bind.v2.ContextFactor";
+    private static final String JAXB_PACKAGE_NAME = "com.sun.xml.bind.v2";
+
+    private static final String JAXB_CONTEXT_FACTORY_CLASS_NAME = JAXB_PACKAGE_NAME + ".ContextFactory";
 
     /**
      * Build {@link DocumentBuilderFactory}. The underlying implementation used is <code>org.apache.xerces.jaxp
@@ -105,9 +107,10 @@ public final class FactoryBuilder {
      * @return the new created {@link JAXBContext}
      */
     public static JAXBContext buildJAXBContext(String contextPath, ClassLoader classLoader, Map<String, ?> properties) {
-        System.setProperty(JAXBContext.JAXB_CONTEXT_FACTORY, JAXB_CONTEXT);
+        System.setProperty(JAXBContext.class.getName(), JAXB_CONTEXT_FACTORY_CLASS_NAME);
         try {
-            return JAXBContext.newInstance(contextPath, classLoader, properties);
+            return JAXBContext.newInstance(contextPath, new JAXBClassLoader(FactoryBuilder.class.getClassLoader(),
+                    classLoader), properties);
         } catch (JAXBException e) {
             throw new JAXOException(e.getMessage(), e);
         }
@@ -115,5 +118,46 @@ public final class FactoryBuilder {
 
     private FactoryBuilder() {
         super();
+    }
+
+    /**
+     * I really don't understand why the hell they can assume that the class loader used to load context factory is
+     * exactly the same class loader used to load generated classes from schema.
+     * <p/>
+     * For all classes under <code>com.sun.xml.bind.v2</code> package, they will be loaded by this bundle's class
+     * loader, while for all the other classes, they will be loaded by the class loader passed in.
+     *
+     * @author honnix
+     */
+    private static class JAXBClassLoader extends ClassLoader {
+        private final ClassLoader contextFactoryClassLoader;
+
+        private final ClassLoader objectFactoryClassLoader;
+
+        public JAXBClassLoader(ClassLoader contextFactoryClassLoader, ClassLoader objectFactoryClassLoader) {
+            super();
+
+            this.contextFactoryClassLoader = contextFactoryClassLoader;
+            this.objectFactoryClassLoader = objectFactoryClassLoader;
+        }
+
+        @Override
+        protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            Class<?> c = findLoadedClass(name);
+
+            if (c == null) {
+                if (name.startsWith(JAXB_PACKAGE_NAME)) {
+                    c = contextFactoryClassLoader.loadClass(name);
+                } else {
+                    c = objectFactoryClassLoader.loadClass(name);
+                }
+            }
+
+            if (resolve) {
+                resolveClass(c);
+            }
+
+            return c;
+        }
     }
 }

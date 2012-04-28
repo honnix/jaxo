@@ -54,10 +54,6 @@
             <Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
             <Embed-Transitive>true</Embed-Transitive>
             <!--
-             | i will provide xml api, client should not delegate to bootstrap class loader
-            -->
-            <_exportcontents>javax.xml,javax.xml.*</_exportcontents>
-            <!--
              | each module can override these defaults in their osgi.bnd file
             -->
             <_include>-osgi.bnd</_include>

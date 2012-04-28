@@ -136,6 +136,21 @@ public interface CoreService {
      * @param contextPath a list of colon (':', \u005Cu003A) separated java package names that contain
      *                    schema-derived classes and/or fully qualified JAXB-annotated classes.
      * @param classLoader this class loader will be used to locate the implementation classes.
+     * @return the new created {@link JAXBContext}
+     */
+    JAXBContext createJAXBContext(String contextPath, ClassLoader classLoader);
+
+    /**
+     * Create a new {@link JAXBContext}. This will not be cached anyway.
+     * <p/>
+     * Creating {@link JAXBContext} is an extremely slow operation, so after creating a new {@link JAXBContext},
+     * client should cache it as long as possible. <b>DO NOT</b> create {@link JAXBContext} on demand.
+     * <p/>
+     * In the meanwhile, creating marshaller and unmarshaller is fast enough.
+     *
+     * @param contextPath a list of colon (':', \u005Cu003A) separated java package names that contain
+     *                    schema-derived classes and/or fully qualified JAXB-annotated classes.
+     * @param classLoader this class loader will be used to locate the implementation classes.
      * @param properties  provider-specific properties
      * @return the new created {@link JAXBContext}
      */

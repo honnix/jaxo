@@ -83,6 +83,11 @@ public class AbstractCoreServiceImplTest {
 
     @Test
     public void testCreateJAXBContext() {
+        mockCoreService.createJAXBContext(ObjectFactory.class.getPackage().getName(), getClass().getClassLoader());
+    }
+
+    @Test
+    public void testCreateJAXBContextWithProperties() {
         mockCoreService.createJAXBContext(ObjectFactory.class.getPackage().getName(), getClass().getClassLoader(),
                 new HashMap<String, Object>());
     }
