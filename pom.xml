@@ -122,50 +122,6 @@
         <version>2.2.5</version>
         <scope>runtime</scope>
       </dependency>
-      <!--
-      <dependency>
-        <groupId>org.codehaus.woodstox</groupId>
-        <artifactId>woodstox-core-asl</artifactId>
-        <version>4.1.2</version>
-        <scope>runtime</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.woodstox</groupId>
-        <artifactId>stax2-api</artifactId>
-        <version>3.1.1</version>
-        <scope>runtime</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jvnet.mimepull</groupId>
-        <artifactId>mimepull</artifactId>
-        <version>1.8</version>
-        <scope>runtime</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.glassfish.gmbal</groupId>
-        <artifactId>gmbal-api-only</artifactId>
-        <version>3.1.0-b001</version>
-        <scope>runtime</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.glassfish.external</groupId>
-        <artifactId>management-api</artifactId>
-        <version>3.0.0-b012</version>
-        <scope>runtime</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.glassfish.ha</groupId>
-        <artifactId>ha-api</artifactId>
-        <version>3.1.8</version>
-        <scope>runtime</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.glassfish</groupId>
-        <artifactId>javax.annotation</artifactId>
-        <version>3.1.1</version>
-        <scope>runtime</scope>
-      </dependency>
-      -->
       <dependency>
         <groupId>com.sun.xml.ws</groupId>
         <artifactId>jaxws-rt</artifactId>

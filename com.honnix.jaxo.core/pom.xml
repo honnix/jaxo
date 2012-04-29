@@ -77,43 +77,6 @@
       <artifactId>FastInfoset</artifactId>
       <optional>true</optional>
     </dependency>
-    <!--
-    <dependency>
-      <groupId>org.codehaus.woodstox</groupId>
-      <artifactId>woodstox-core-asl</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.woodstox</groupId>
-      <artifactId>stax2-api</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.jvnet.mimepull</groupId>
-      <artifactId>mimepull</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.gmbal</groupId>
-      <artifactId>gmbal-api-only</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.external</groupId>
-      <artifactId>management-api</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.ha</groupId>
-      <artifactId>ha-api</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>javax.annotation</artifactId>
-      <optional>true</optional>
-    </dependency>
-    -->
     <dependency>
       <groupId>javax.xml.bind</groupId>
       <artifactId>jaxb-api</artifactId>
