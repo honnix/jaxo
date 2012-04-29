@@ -3,4 +3,3 @@
 #-----------------------------------------------------------------
 
 Bundle-Activator: ${bundle.namespace}.internal.ExampleActivator
-Import-Package: !org.jvnet.hk2.annotations,!org.jvnet.hk2.annotations.*,!javax.servlet,!javax.servlet.*,!com.sun.msv,!com.sun.msv.*,!com.sun.net.httpserver,!com.sun.net.httpserver.*,*
