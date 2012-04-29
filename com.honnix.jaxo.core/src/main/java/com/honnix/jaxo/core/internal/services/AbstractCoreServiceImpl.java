@@ -20,6 +20,7 @@ import com.honnix.jaxo.core.services.CoreService;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -41,6 +42,11 @@ abstract class AbstractCoreServiceImpl implements CoreService {
     @Override
     public DocumentBuilderFactory createDocumentBuilderFactory() {
         return FactoryBuilder.buildDocumentBuilderFactory();
+    }
+
+    @Override
+    public SAXParserFactory createSAXParserFactory() {
+        return FactoryBuilder.buildSAXParserFactory();
     }
 
     @Override

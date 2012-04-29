@@ -3,12 +3,14 @@ package com.honnix.jaxo.core.internal.util;
 import com.honnix.jaxo.core.internal.jaxb.ObjectFactory;
 import org.apache.xalan.xsltc.trax.TransformerFactoryImpl;
 import org.apache.xerces.jaxp.DocumentBuilderFactoryImpl;
+import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.apache.xerces.jaxp.validation.XMLSchemaFactory;
 import org.apache.xpath.jaxp.XPathFactoryImpl;
 import org.junit.Test;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPathFactory;
@@ -33,6 +35,13 @@ public class FactoryBuilderTest {
         assertNotNull("oops, we failed to build factory", factory);
         assertTrue("it should be namespace aware", factory.isNamespaceAware());
         assertTrue("it is the wrong type", factory instanceof DocumentBuilderFactoryImpl);
+    }
+
+    public void testBuildSAXParserFactory() {
+        SAXParserFactory factory = FactoryBuilder.buildSAXParserFactory();
+        assertNotNull("oops, we failed to build factory", factory);
+        assertTrue("it should be namespace aware", factory.isNamespaceAware());
+        assertTrue("it is the wrong type", factory instanceof SAXParserFactoryImpl);
     }
 
     @Test

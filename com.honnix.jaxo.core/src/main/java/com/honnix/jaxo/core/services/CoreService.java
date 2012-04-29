@@ -18,6 +18,8 @@ package com.honnix.jaxo.core.services;
 import javax.xml.bind.JAXBContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.Schema;
@@ -61,6 +63,25 @@ public interface CoreService {
      * @return either one from {@link ThreadLocal} or a new created one
      */
     DocumentBuilder getDocumentBuilder();
+
+    /**
+     * Create a new {@link SAXParserFactory}. This will not be cached anyway.
+     * <p/>
+     * By default, the {@link SAXParserFactory} is configured as namespace aware.
+     *
+     * @return the new created {@link SAXParserFactory}
+     */
+    SAXParserFactory createSAXParserFactory();
+
+    /**
+     * Get {@link SAXParser} from {@link ThreadLocal} if there is, otherwise create a new one,
+     * set it to {@link ThreadLocal}, and then return back.
+     * <p/>
+     * The {@link SAXParserFactory} used to create this {@link SAXParser} is configured as namespace aware.
+     *
+     * @return either one from {@link ThreadLocal} or a new created one
+     */
+    SAXParser getSAXParser();
 
     /**
      * Create a new {@link XPathFactory}. This will not be cached anyway.

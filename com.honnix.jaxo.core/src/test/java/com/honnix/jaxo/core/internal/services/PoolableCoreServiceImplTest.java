@@ -24,6 +24,7 @@ import org.osgi.service.cm.ManagedService;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.SAXParser;
 import javax.xml.transform.Transformer;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
@@ -78,6 +79,31 @@ public class PoolableCoreServiceImplTest {
 
         poolableCoreService.returnDocumentBuilder(builder);
         poolableCoreService.returnDocumentBuilder(cachedBuilder);
+    }
+
+    @Test
+    public void testGetSAXParser() {
+        SAXParser parser = poolableCoreService.getSAXParser();
+        assertNotNull("unable to get sax parser", parser);
+        poolableCoreService.returnSAXParser(parser);
+
+        SAXParser cachedParser = poolableCoreService.getSAXParser();
+        assertNotNull("unable to get sax parser", cachedParser);
+        assertSame("it should have been cached", parser, cachedParser);
+        poolableCoreService.returnSAXParser(cachedParser);
+    }
+
+    @Test
+    public void testGetSAXParserTwoObjects() {
+        SAXParser parser = poolableCoreService.getSAXParser();
+        assertNotNull("unable to get sax parser", parser);
+
+        SAXParser cachedParser = poolableCoreService.getSAXParser();
+        assertNotNull("unable to get sax parser", cachedParser);
+        assertNotSame("should be no cached object available", parser, cachedParser);
+
+        poolableCoreService.returnSAXParser(parser);
+        poolableCoreService.returnSAXParser(cachedParser);
     }
 
     @Test

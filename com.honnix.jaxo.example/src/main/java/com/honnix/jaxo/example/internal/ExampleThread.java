@@ -25,6 +25,8 @@ import org.xml.sax.SAXException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.Schema;
@@ -39,7 +41,7 @@ import java.util.HashMap;
  * @author honnix
  */
 public class ExampleThread extends Thread {
-    private BundleContext context;
+    private final BundleContext context;
 
     public ExampleThread(BundleContext context) {
         super();
@@ -75,6 +77,10 @@ public class ExampleThread extends Thread {
         assert (builderFactory != null);
         System.out.println("DocumentBuilderFactory is good");
 
+        SAXParserFactory parserFactory = coreService.createSAXParserFactory();
+        assert (parserFactory != null);
+        System.out.println("SAXParserFactory is good");
+
         XPathFactory xpathFactory = coreService.createXPathFactory();
         assert (xpathFactory != null);
         System.out.println("XPathFactory is good");
@@ -91,6 +97,10 @@ public class ExampleThread extends Thread {
         DocumentBuilder builder = coreService.getDocumentBuilder();
         assert (builder != null);
         System.out.println("DocumentBuilder is good");
+
+        SAXParser parser = coreService.getSAXParser();
+        assert (parser != null);
+        System.out.println("SAXParser is good");
 
         XPath xpath = coreService.getXPath();
         assert (xpath != null);
@@ -122,6 +132,10 @@ public class ExampleThread extends Thread {
         assert (builderFactory != null);
         System.out.println("DocumentBuilderFactory is good");
 
+        SAXParserFactory parserFactory = poolableCoreService.createSAXParserFactory();
+        assert (parserFactory != null);
+        System.out.println("SAXParserFactory is good");
+
         XPathFactory xpathFactory = poolableCoreService.createXPathFactory();
         assert (xpathFactory != null);
         System.out.println("XPathFactory is good");
@@ -139,6 +153,11 @@ public class ExampleThread extends Thread {
         assert (builder != null);
         System.out.println("DocumentBuilder is good");
         poolableCoreService.returnDocumentBuilder(builder);
+
+        SAXParser parser = poolableCoreService.getSAXParser();
+        assert (parser != null);
+        System.out.println("SAXParser is good");
+        poolableCoreService.returnSAXParser(parser);
 
         XPath xpath = poolableCoreService.getXPath();
         assert (xpath != null);

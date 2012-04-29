@@ -29,7 +29,7 @@ import java.util.Properties;
  * The main entrance of this bundle.
  */
 public final class CoreActivator implements BundleActivator {
-    private PoolableCoreService poolableCoreService;
+    private final PoolableCoreService poolableCoreService;
 
     public CoreActivator() {
         super();

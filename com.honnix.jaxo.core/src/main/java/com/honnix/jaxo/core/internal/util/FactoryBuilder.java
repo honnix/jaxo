@@ -21,6 +21,7 @@ import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPathFactory;
@@ -35,6 +36,9 @@ import java.util.Map;
 public final class FactoryBuilder {
     private static final String DOCUMENT_BUILDER_FACTORY_CLASS_NAME = "org.apache.xerces.jaxp" +
             ".DocumentBuilderFactoryImpl";
+
+    private static final String SAX_PARSER_FACTORY_CLASS_NAME = "org.apache.xerces.jaxp" +
+            ".SAXParserFactoryImpl";
 
     private static final String XPATH_FACTORY_CLASS_NAME = "org.apache.xpath.jaxp.XPathFactoryImpl";
 
@@ -56,6 +60,21 @@ public final class FactoryBuilder {
      */
     public static DocumentBuilderFactory buildDocumentBuilderFactory() {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(DOCUMENT_BUILDER_FACTORY_CLASS_NAME,
+                FactoryBuilder.class.getClassLoader());
+        factory.setNamespaceAware(true);
+        return factory;
+    }
+
+    /**
+     * Build {@link SAXParserFactory}. The underlying implementation used is <code>org.apache.xerces.jaxp
+     * .SAXParserFactoryImpl</code>.
+     * <p/>
+     * By default the {@link SAXParserFactory} is configured as namespace aware.
+     *
+     * @return the new created {@link SAXParserFactory}
+     */
+    public static SAXParserFactory buildSAXParserFactory() {
+        SAXParserFactory factory = SAXParserFactory.newInstance(SAX_PARSER_FACTORY_CLASS_NAME,
                 FactoryBuilder.class.getClassLoader());
         factory.setNamespaceAware(true);
         return factory;

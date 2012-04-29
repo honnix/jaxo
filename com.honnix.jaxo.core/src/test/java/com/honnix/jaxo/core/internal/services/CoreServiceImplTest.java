@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.SAXParser;
 import javax.xml.transform.Transformer;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
@@ -48,6 +49,15 @@ public class CoreServiceImplTest {
 
         DocumentBuilder cachedBuilder = coreService.getDocumentBuilder();
         assertSame("it should have been cached", builder, cachedBuilder);
+    }
+
+    @Test
+    public void testGetSAXParser() {
+        SAXParser parser = coreService.getSAXParser();
+        assertNotNull("unable to get sax parser", parser);
+
+        SAXParser cachedParser = coreService.getSAXParser();
+        assertSame("it should have been cached", parser, cachedParser);
     }
 
     @Test

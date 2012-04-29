@@ -205,7 +205,6 @@
           </provision>
           <runner>1.7.6</runner>
         </configuration>
-        <executions></executions>
       </plugin>
     </plugins>
   </build>

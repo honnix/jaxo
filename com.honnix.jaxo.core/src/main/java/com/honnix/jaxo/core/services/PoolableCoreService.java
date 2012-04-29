@@ -16,6 +16,7 @@
 package com.honnix.jaxo.core.services;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.SAXParser;
 import javax.xml.transform.Transformer;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
@@ -59,6 +60,13 @@ public interface PoolableCoreService extends CoreService {
      * @param documentBuilder the object to return back to pool
      */
     void returnDocumentBuilder(DocumentBuilder documentBuilder);
+
+    /**
+     * Return {@link SAXParser} to object pool.
+     *
+     * @param saxParser the object to return back to pool
+     */
+    void returnSAXParser(SAXParser saxParser);
 
     /**
      * Return {@link XPath} to object pool.

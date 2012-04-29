@@ -16,10 +16,7 @@
 package com.honnix.jaxo.core.internal.services;
 
 import com.honnix.jaxo.core.exception.JAXOException;
-import com.honnix.jaxo.core.internal.factory.DocumentBuilderObjectFactory;
-import com.honnix.jaxo.core.internal.factory.TransformerObjectFactory;
-import com.honnix.jaxo.core.internal.factory.ValidatorObjectFactory;
-import com.honnix.jaxo.core.internal.factory.XPathObjectFactory;
+import com.honnix.jaxo.core.internal.factory.*;
 import com.honnix.jaxo.core.services.PoolableCoreService;
 import org.apache.commons.pool.ObjectPool;
 import org.apache.commons.pool.impl.GenericObjectPool;
@@ -27,6 +24,7 @@ import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.SAXParser;
 import javax.xml.transform.Transformer;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
@@ -61,6 +59,9 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
 
     private static final String MIN_EVICTABLE_IDLE_TIME_MILLIS = ".minEvictableIdleTimeMillis";
 
+    private static final String[] CONFIG_ITEMS = {DocumentBuilder.class.getName(), SAXParser.class.getName(),
+            XPath.class.getName(), Transformer.class.getName()};
+
     private final Map<String, ObjectPool> objectPoolMap;
 
     private final ConcurrentMap<Schema, ObjectPool<Validator>> validatorObjectPoolMap;
@@ -83,12 +84,29 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
             }
         }
         objectPoolMap.clear();
+
+        for (ObjectPool objectPool : validatorObjectPoolMap.values()) {
+            try {
+                objectPool.close();
+            } catch (Exception ignored) {
+            }
+        }
+        validatorObjectPoolMap.clear();
     }
 
     @Override
     public DocumentBuilder getDocumentBuilder() {
         try {
             return (DocumentBuilder) objectPoolMap.get(DocumentBuilder.class.getName()).borrowObject();
+        } catch (Exception e) {
+            throw new JAXOException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public SAXParser getSAXParser() {
+        try {
+            return (SAXParser) objectPoolMap.get(SAXParser.class.getName()).borrowObject();
         } catch (Exception e) {
             throw new JAXOException(e.getMessage(), e);
         }
@@ -152,36 +170,27 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void returnDocumentBuilder(DocumentBuilder documentBuilder) {
-        try {
-            objectPoolMap.get(DocumentBuilder.class.getName()).returnObject(documentBuilder);
-        } catch (Exception e) {
-            throw new JAXOException(e.getMessage(), e);
-        }
+        returnIt(DocumentBuilder.class.getName(), documentBuilder);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    public void returnSAXParser(SAXParser saxParser) {
+        returnIt(SAXParser.class.getName(), saxParser);
+    }
+
+    @Override
     public void returnXPath(XPath xpath) {
-        try {
-            objectPoolMap.get(XPath.class.getName()).returnObject(xpath);
-        } catch (Exception e) {
-            throw new JAXOException(e.getMessage(), e);
-        }
+        returnIt(XPath.class.getName(), xpath);
+    }
+
+    @Override
+    public void returnTransformer(Transformer transformer) {
+        returnIt(Transformer.class.getName(), transformer);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void returnTransformer(Transformer transformer) {
-        try {
-            objectPoolMap.get(Transformer.class.getName()).returnObject(transformer);
-        } catch (Exception e) {
-            throw new JAXOException(e.getMessage(), e);
-        }
-    }
-
-    @Override
     public void returnValidator(Schema schema, Validator validator) {
         try {
             validatorObjectPoolMap.get(schema).returnObject(validator);
@@ -193,9 +202,9 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
     private Map<String, GenericObjectPool.Config> buildConfigMap(Dictionary properties) {
         Map<String, GenericObjectPool.Config> configMap = new HashMap<String, GenericObjectPool.Config>();
 
-        configMap.put(DocumentBuilder.class.getName(), buildConfig(properties, DocumentBuilder.class.getName()));
-        configMap.put(XPath.class.getName(), buildConfig(properties, XPath.class.getName()));
-        configMap.put(Transformer.class.getName(), buildConfig(properties, Transformer.class.getName()));
+        for (String item : CONFIG_ITEMS) {
+            configMap.put(item, buildConfig(properties, item));
+        }
 
         return configMap;
     }
@@ -241,9 +250,20 @@ public class PoolableCoreServiceImpl extends AbstractCoreServiceImpl implements 
 
         objectPoolMap.put(DocumentBuilder.class.getName(), new GenericObjectPool<DocumentBuilder>(new
                 DocumentBuilderObjectFactory(), configMap.get(DocumentBuilder.class.getName())));
+        objectPoolMap.put(SAXParser.class.getName(), new GenericObjectPool<SAXParser>(new SAXParserObjectFactory(),
+                configMap.get(SAXParser.class.getName())));
         objectPoolMap.put(XPath.class.getName(), new GenericObjectPool<XPath>(new
                 XPathObjectFactory(), configMap.get(XPath.class.getName())));
         objectPoolMap.put(Transformer.class.getName(), new GenericObjectPool<Transformer>(new
                 TransformerObjectFactory(), configMap.get(Transformer.class.getName())));
+    }
+
+    @SuppressWarnings("unchecked")
+    private void returnIt(String key, Object object) {
+        try {
+            objectPoolMap.get(key).returnObject(object);
+        } catch (Exception e) {
+            throw new JAXOException(e.getMessage(), e);
+        }
     }
 }

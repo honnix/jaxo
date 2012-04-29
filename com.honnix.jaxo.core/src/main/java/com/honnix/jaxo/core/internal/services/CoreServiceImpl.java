@@ -17,9 +17,11 @@ package com.honnix.jaxo.core.internal.services;
 
 import com.honnix.jaxo.core.exception.JAXOException;
 import com.honnix.jaxo.core.services.CoreService;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
@@ -46,6 +48,7 @@ public class CoreServiceImpl extends AbstractCoreServiceImpl {
 
         threadLocalMap = new HashMap<String, ThreadLocal>();
         threadLocalMap.put(DocumentBuilder.class.getName(), new ThreadLocal<DocumentBuilder>());
+        threadLocalMap.put(SAXParser.class.getName(), new ThreadLocal<SAXParser>());
         threadLocalMap.put(XPath.class.getName(), new ThreadLocal<XPath>());
         threadLocalMap.put(Transformer.class.getName(), new ThreadLocal<Transformer>());
 
@@ -68,6 +71,26 @@ public class CoreServiceImpl extends AbstractCoreServiceImpl {
         }
 
         return documentBuilder;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public SAXParser getSAXParser() {
+        SAXParser saxParser = (SAXParser) threadLocalMap.get(SAXParser.class.getName()).get();
+
+        if (saxParser == null) {
+            try {
+                saxParser = createSAXParserFactory().newSAXParser();
+            } catch (ParserConfigurationException e) {
+                throw new JAXOException(e.getMessage(), e);
+            } catch (SAXException e) {
+                throw new JAXOException(e.getMessage(), e);
+            }
+
+            threadLocalMap.get(SAXParser.class.getName()).set(saxParser);
+        }
+
+        return saxParser;
     }
 
     @Override

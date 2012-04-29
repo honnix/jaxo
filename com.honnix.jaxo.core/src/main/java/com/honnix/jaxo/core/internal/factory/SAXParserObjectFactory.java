@@ -13,34 +13,31 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+
 package com.honnix.jaxo.core.internal.factory;
 
+import com.honnix.jaxo.core.internal.util.FactoryBuilder;
 import org.apache.commons.pool.BasePoolableObjectFactory;
 
-import javax.xml.validation.Schema;
-import javax.xml.validation.Validator;
+import javax.xml.parsers.SAXParser;
 
 /**
- * Object factory to create {@link javax.xml.transform.Transformer}.
+ * Object factory to create {@link javax.xml.parsers.SAXParser}.
  *
  * @author honnix
  */
-public class ValidatorObjectFactory extends BasePoolableObjectFactory<Validator> {
-    private final Schema schema;
-
-    public ValidatorObjectFactory(Schema schema) {
+public class SAXParserObjectFactory extends BasePoolableObjectFactory<SAXParser> {
+    public SAXParserObjectFactory() {
         super();
-
-        this.schema = schema;
     }
 
     @Override
-    public Validator makeObject() throws Exception {
-        return schema.newValidator();
+    public SAXParser makeObject() throws Exception {
+        return FactoryBuilder.buildSAXParserFactory().newSAXParser();
     }
 
     @Override
-    public void passivateObject(Validator validator) throws Exception {
-        validator.reset();
+    public void passivateObject(SAXParser saxParser) throws Exception {
+        saxParser.reset();
     }
 }

@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.SAXParser;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -53,6 +54,11 @@ public class AbstractCoreServiceImplTest {
     @Test
     public void testCreateDocumentBuilderFactory() {
         assertNotNull("unable to create factory", mockCoreService.createDocumentBuilderFactory());
+    }
+
+    @Test
+    public void testCreateSAXParserFactory() {
+        assertNotNull("unable to create factory", mockCoreService.createSAXParserFactory());
     }
 
     @Test
@@ -103,13 +109,18 @@ public class AbstractCoreServiceImplTest {
         }
 
         @Override
+        public SAXParser getSAXParser() {
+            return null;
+        }
+
+        @Override
         public XPath getXPath() {
             return null;
         }
 
         @Override
         public Transformer getTransformer() {
-            Transformer transformer = null;
+            Transformer transformer;
             try {
                 transformer = createTransformerFactory().newTransformer();
             } catch (TransformerConfigurationException e) {

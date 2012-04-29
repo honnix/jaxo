@@ -37,7 +37,7 @@ public class DocumentBuilderObjectFactory extends BasePoolableObjectFactory<Docu
     }
 
     @Override
-    public void passivateObject(DocumentBuilder builder) throws Exception {
-        builder.reset();
+    public void passivateObject(DocumentBuilder documentBuilder) throws Exception {
+        documentBuilder.reset();
     }
 }
