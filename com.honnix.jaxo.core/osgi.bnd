@@ -3,4 +3,4 @@
 #-----------------------------------------------------------------
 
 Bundle-Activator: ${bundle.namespace}.internal.CoreActivator
-Import-Package: !javax.swing,!javax.swing.*,!javax.imageio,!javax.imageio.*,*
+Import-Package: !org.jvnet.hk2.annotations,!org.jvnet.hk2.annotations.*,!javax.servlet,!javax.servlet.*,!javax.swing,!javax.swing.*,!javax.imageio,!javax.imageio.*,!com.sun.msv,!com.sun.msv.*,!com.sun.net.httpserver,!com.sun.net.httpserver.*,!com.sun.org.apache,!com.sun.org.apache.*,*
