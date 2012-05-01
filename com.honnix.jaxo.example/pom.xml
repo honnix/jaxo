@@ -8,7 +8,7 @@
     <relativePath>../poms/compiled/</relativePath>
     <groupId>com.honnix.jaxo.build</groupId>
     <artifactId>compiled-bundle-settings</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0</version>
   </parent>
 
   <properties>
