@@ -45,6 +45,14 @@ This bundle provides following OSGi services:
 
     For what these configurations mean, please refer to [Apache Commons Pool](http://commons.apache.org/pool/).
 
+    Currently, following types of objects can be configured:
+
+    * javax.xml.parsers.DocumentBuilder
+    * javax.xml.parsers.SAXParser
+    * javax.xml.xpath.XPath
+    * javax.xml.transform.Transformer
+    * javax.xml.validation.Validator
+
     `service.pid` equals to service name, and if not configured, default values provided by
     [Apache Commons Pool](http://commons.apache.org/pool/) will be used.
 
