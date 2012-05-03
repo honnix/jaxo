@@ -1,4 +1,4 @@
-# Introduction
+# Introduction [![Build Status](https://secure.travis-ci.org/honnix/jaxo.png?branch=0.1.0)](http://travis-ci.org/honnix/jaxo)
 
 JAXP, JAXB, JAXWS, these XML stuffs can not work well together with OSGi due to class loading strategy.
 Also nearly all of them are not thread-safe and  have critical performance problem if without proper pooling.
