@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.honnix.jaxo.core.internal.factory;
+package com.honnix.jaxo.core.internal.pool;
 
 import com.honnix.jaxo.core.internal.util.FactoryBuilder;
 import org.junit.Before;

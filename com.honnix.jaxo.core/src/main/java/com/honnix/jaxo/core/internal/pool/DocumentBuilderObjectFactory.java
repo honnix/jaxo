@@ -14,30 +14,30 @@
  *    limitations under the License.
  */
 
-package com.honnix.jaxo.core.internal.factory;
+package com.honnix.jaxo.core.internal.pool;
 
 import com.honnix.jaxo.core.internal.util.FactoryBuilder;
 import org.apache.commons.pool.BasePoolableObjectFactory;
 
-import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.DocumentBuilder;
 
 /**
- * Object factory to create {@link javax.xml.parsers.SAXParser}.
+ * Object factory to create {@link DocumentBuilder}.
  *
  * @author honnix
  */
-public class SAXParserObjectFactory extends BasePoolableObjectFactory<SAXParser> {
-    public SAXParserObjectFactory() {
+public class DocumentBuilderObjectFactory extends BasePoolableObjectFactory<DocumentBuilder> {
+    public DocumentBuilderObjectFactory() {
         super();
     }
 
     @Override
-    public SAXParser makeObject() throws Exception {
-        return FactoryBuilder.buildSAXParserFactory().newSAXParser();
+    public DocumentBuilder makeObject() throws Exception {
+        return FactoryBuilder.buildDocumentBuilderFactory().newDocumentBuilder();
     }
 
     @Override
-    public void passivateObject(SAXParser saxParser) throws Exception {
-        saxParser.reset();
+    public void passivateObject(DocumentBuilder documentBuilder) throws Exception {
+        documentBuilder.reset();
     }
 }

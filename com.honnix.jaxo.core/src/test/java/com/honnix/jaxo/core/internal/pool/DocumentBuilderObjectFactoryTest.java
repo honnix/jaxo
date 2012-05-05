@@ -1,4 +1,4 @@
-package com.honnix.jaxo.core.internal.factory;
+package com.honnix.jaxo.core.internal.pool;
 
 import org.junit.Before;
 import org.junit.Test;

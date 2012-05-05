@@ -1,4 +1,4 @@
-package com.honnix.jaxo.core.internal.factory;
+package com.honnix.jaxo.core.internal.pool;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +10,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 /**
- * Test class for {@link com.honnix.jaxo.core.internal.factory.SAXParserObjectFactory}.
+ * Test class for {@link com.honnix.jaxo.core.internal.pool.SAXParserObjectFactory}.
  *
  * @author honnix
  */

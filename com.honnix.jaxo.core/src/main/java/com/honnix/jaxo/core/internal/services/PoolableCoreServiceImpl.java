@@ -16,7 +16,11 @@
 package com.honnix.jaxo.core.internal.services;
 
 import com.honnix.jaxo.core.exception.JAXOException;
-import com.honnix.jaxo.core.internal.factory.*;
+import com.honnix.jaxo.core.internal.pool.DocumentBuilderObjectFactory;
+import com.honnix.jaxo.core.internal.pool.SAXParserObjectFactory;
+import com.honnix.jaxo.core.internal.pool.TransformerObjectFactory;
+import com.honnix.jaxo.core.internal.pool.ValidatorObjectFactory;
+import com.honnix.jaxo.core.internal.pool.XPathObjectFactory;
 import com.honnix.jaxo.core.services.PoolableCoreService;
 import org.apache.commons.pool.ObjectPool;
 import org.apache.commons.pool.impl.GenericObjectPool;

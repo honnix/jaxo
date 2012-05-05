@@ -13,30 +13,30 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.honnix.jaxo.core.internal.factory;
+package com.honnix.jaxo.core.internal.pool;
 
 import com.honnix.jaxo.core.internal.util.FactoryBuilder;
 import org.apache.commons.pool.BasePoolableObjectFactory;
 
-import javax.xml.xpath.XPath;
+import javax.xml.transform.Transformer;
 
 /**
- * Object factory to create {@link XPath}.
+ * Object factory to create {@link Transformer}.
  *
  * @author honnix
  */
-public class XPathObjectFactory extends BasePoolableObjectFactory<XPath> {
-    public XPathObjectFactory() {
+public class TransformerObjectFactory extends BasePoolableObjectFactory<Transformer> {
+    public TransformerObjectFactory() {
         super();
     }
 
     @Override
-    public XPath makeObject() throws Exception {
-        return FactoryBuilder.buildXPathFactory().newXPath();
+    public Transformer makeObject() throws Exception {
+        return FactoryBuilder.buildTransformerFactory().newTransformer();
     }
 
     @Override
-    public void passivateObject(XPath xpath) throws Exception {
-        xpath.reset();
+    public void passivateObject(Transformer transformer) throws Exception {
+        transformer.reset();
     }
 }
