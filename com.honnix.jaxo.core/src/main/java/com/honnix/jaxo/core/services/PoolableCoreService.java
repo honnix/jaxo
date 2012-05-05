@@ -23,9 +23,9 @@ import javax.xml.validation.Validator;
 import javax.xml.xpath.XPath;
 
 /**
- * JAXO core services. Most JAXP specified stuffs can be retrieved via this services.
+ * JAXO core services. Most JAXP and JAXB specified stuffs can be retrieved via this services.
  * <p/>
- * This services guarantees that correct class loader will be used to load factories,
+ * This services guarantees that correct class loader will be used to load factories specified by JAXP and JAXB,
  * and these factories will not be cached.
  * <p/>
  * The other stuffs like <code>DocumentBuilder</code>, <code>XPath</code> will be cached.

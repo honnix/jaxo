@@ -1,9 +1,25 @@
 # Introduction [![Build Status](https://secure.travis-ci.org/honnix/jaxo.png?branch=master)](http://travis-ci.org/honnix/jaxo)
 
 JAXP, JAXB, JAXWS, these XML stuffs can not work well together with OSGi due to class loading strategy.
-Also nearly all of them are not thread-safe and  have critical performance problem if without proper pooling.
+Also nearly all of them are not thread-safe and have critical performance problem if without proper pooling.
+
+## Core Bundle
 
 The core bundle wraps latest implementations, pools, and finally provides services.
+
+One should note that this bundle is absolutely not high configurable since we believe JAXP and JAXB
+is completely over engineered and nobody would ever configure it as it is supposed to be, so either
+you like this project or you think it sucks.
+
+One good example is `javax.xml.parser.DocumentBuilderFactory`, by default we set it as namespace awared, and
+no validation enabled. The reason is, if someone ask you to use JAXP or JAXB, they surely want you to use damn
+namespace because it is both cool and zhuangbilable, so why not eanbling it by default; and you certainly can
+validate the DOM after it is built, so validation is no disabled.
+
+This bundle is not an implementation of *OSGi Service Platform Service Compendium 702 XML Parser Service
+Specification*. One of the most important reason is **checked exception** which is a completely failure design of
+JAXP and JAXP. It just sucks. Another reason is this specification is too simple to be used in reality. So forget
+about it.
 
 # Build and Run
 
@@ -89,3 +105,7 @@ need to mention is maven dependency. The client should define dependencies:
 ```
 
 And the client should not delegate `javax.xml` to bootstrap class loader.
+
+# Acknowledgement
+
+Quality ensured by [Travis CI](http://travis-ci.org/).
