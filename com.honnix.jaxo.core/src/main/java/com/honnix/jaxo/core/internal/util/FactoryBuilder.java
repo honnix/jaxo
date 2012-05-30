@@ -42,7 +42,7 @@ public final class FactoryBuilder {
 
     private static final String XPATH_FACTORY_CLASS_NAME = "org.apache.xpath.jaxp.XPathFactoryImpl";
 
-    private static final String TRANSFORMER_FACTORY_CLASS_NAME = "org.apache.xalan.xsltc.trax.TransformerFactoryImpl";
+    private static final String TRANSFORMER_FACTORY_CLASS_NAME = "org.apache.xalan.processor.TransformerFactoryImpl";
 
     private static final String SCHEMA_FACTORY_CLASS_NAME = "org.apache.xerces.jaxp.validation.XMLSchemaFactory";
 

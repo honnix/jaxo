@@ -1,7 +1,7 @@
 package com.honnix.jaxo.core.internal.util;
 
 import com.honnix.jaxo.core.internal.jaxb.ObjectFactory;
-import org.apache.xalan.xsltc.trax.TransformerFactoryImpl;
+import org.apache.xalan.processor.TransformerFactoryImpl;
 import org.apache.xerces.jaxp.DocumentBuilderFactoryImpl;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.apache.xerces.jaxp.validation.XMLSchemaFactory;
